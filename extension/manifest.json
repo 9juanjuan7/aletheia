@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Aletheia",
+  "version": "1.0.0",
+  "description": "Revealing truth in every article - uncover funding sources, compare coverage, and see the full context",
+  "permissions": [
+    "activeTab",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "http://localhost:5000/*"
+  ],
+  "action": {
+    "default_title": "Analyze this article with Aletheia"
+  },
+  "side_panel": {
+    "default_path": "sidebar/sidebar.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

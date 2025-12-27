@@ -1,0 +1,34 @@
+[
+  {
+    "domain": "healthline.com",
+    "name": "Healthline",
+    "owner": "Red Ventures",
+    "funding_model": "Advertising (primary) + affiliate commissions",
+    "major_advertisers": [
+      "Pharmaceutical companies",
+      "Supplement brands",
+      "Health insurance providers"
+    ],
+    "credibility_rating": "Mostly Factual",
+    "conflicts": [
+      "Earns commission on supplement and product sales",
+      "Heavy affiliate marketing throughout articles"
+    ]
+  },
+  {
+    "domain": "webmd.com",
+    "name": "WebMD",
+    "owner": "Internet Brands (KKR private equity)",
+    "funding_model": "Advertising",
+    "major_advertisers": [
+      "Pharmaceutical companies",
+      "Health insurance",
+      "Medical device manufacturers"
+    ],
+    "credibility_rating": "Mostly Factual",
+    "conflicts": [
+      "Significant pharmaceutical advertising",
+      "May favor advertiser interests in content"
+    ]
+  }
+]
