@@ -30,5 +30,32 @@
       "Significant pharmaceutical advertising",
       "May favor advertiser interests in content"
     ]
+  },
+  {
+    "domain": "medicalnewstoday.com",
+    "name": "medicalnewstoday.com",
+    "owner": "Research failed - unable to determine",
+    "funding_model": "Unknown",
+    "major_advertisers": [],
+    "conflicts": [],
+    "sources": []
+  },
+  {
+    "domain": "platform.openai.com",
+    "name": "platform.openai.com",
+    "owner": "Research failed - unable to determine",
+    "funding_model": "Unknown",
+    "major_advertisers": [],
+    "conflicts": [],
+    "sources": []
+  },
+  {
+    "domain": "platform.openai.com",
+    "name": "platform.openai.com",
+    "owner": "Research failed - unable to determine",
+    "funding_model": "Unknown",
+    "major_advertisers": [],
+    "conflicts": [],
+    "sources": []
   }
 ]

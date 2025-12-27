@@ -1,8 +1,11 @@
 import os
+from dotenv import load_dotenv
 from openai import OpenAI
 from tavily import TavilyClient
 import requests
 from bs4 import BeautifulSoup
+
+load_dotenv()
 
 openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 tavily_client = TavilyClient(api_key=os.getenv('TAVILY_API_KEY'))
