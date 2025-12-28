@@ -2,10 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import os
-import feedparser
 from dotenv import load_dotenv
-from urllib.parse import urlparse, quote
+from urllib.parse import urlparse
 from services.publication_researcher import PublicationResearcher
+from tavily import TavilyClient
 
 load_dotenv()
 
@@ -19,75 +19,35 @@ with open('data/publications.json', 'r') as f:
 with open('data/myths.json', 'r') as f:
     MYTHS = json.load(f)
 
-# Initialize AI researcher
+# Initialize services
 researcher = PublicationResearcher()
+tavily_client = TavilyClient(api_key=os.getenv('TAVILY_API_KEY'))
 
 def is_publication_complete(publication):
     """Check if publication data is complete enough to use"""
     if not publication:
         return False
     
-    # Required fields that should not be empty
     required_fields = ['name', 'domain', 'credibility_score']
     
-    # Check if all required fields exist and are not empty/None
     for field in required_fields:
         if field not in publication or not publication[field]:
             return False
     
-    # Check if credibility score is reasonable (not default/placeholder)
     if publication.get('credibility_score', 0) <= 0 or publication.get('credibility_score', 0) > 10:
         return False
     
-    # Check if we have funding info (critical for credibility)
     if not publication.get('funding_sources') and publication.get('ownership') == 'Unknown':
         return False
     
     return True
-
-def get_related_articles(title):
-    """Find related articles using Google News RSS (free & unlimited)"""
-    try:
-        # Extract key terms from title (first 5-6 meaningful words)
-        keywords = ' '.join(title.split()[:6])
-        
-        # Google News RSS search URL
-        search_query = quote(keywords)
-        rss_url = f"https://news.google.com/rss/search?q={search_query}&hl=en-US&gl=US&ceid=US:en"
-        
-        print(f"📰 Searching Google News for: {keywords}")
-        
-        # Parse RSS feed
-        feed = feedparser.parse(rss_url)
-        
-        articles = []
-        for entry in feed.entries[:5]:  # Get top 5 results
-            # Extract actual source from Google News
-            source_name = entry.source.title if hasattr(entry, 'source') else 'Unknown'
-            
-            articles.append({
-                'title': entry.title,
-                'url': entry.link,
-                'source': source_name,
-                'published': entry.published if hasattr(entry, 'published') else None
-            })
-        
-        print(f"📰 Found {len(articles)} related articles")
-        return articles
-        
-    except Exception as e:
-        print(f"❌ Google News RSS error: {e}")
-        return []
 
 def extract_domain(url):
     """Extract clean domain from URL"""
     try:
         parsed = urlparse(url)
         domain = parsed.netloc.replace('www.', '')
-        # Remove Google News redirect
-        if 'news.google.com' in domain:
-            return None
-        return domain
+        return domain if domain else None
     except:
         return None
 
@@ -127,6 +87,117 @@ def get_or_research_publication(domain):
     
     return new_pub
 
+def calculate_promise_score(domain, result):
+    """Minimal filtering - just skip obvious junk"""
+    score = 5.0
+    
+    # Check cache FIRST (most reliable indicator)
+    for pub in PUBLICATIONS:
+        if pub.get('domain') == domain:
+            cached_score = pub.get('credibility_score', 0)
+            if cached_score > 0:
+                print(f"    ✅ Cached credibility: {cached_score}/10")
+                return cached_score
+    
+    # Filter obvious junk
+    domain_lower = domain.lower()
+    title_lower = result.get('title', '').lower()
+    
+    # Skip obvious commercial sites
+    if any(x in domain_lower for x in ['shop', 'store', 'buy', 'order', 'supplement', 'pills']):
+        score = 1
+        print(f"    🚫 Commercial/sales site")
+        return score
+    
+    # Skip free blog platforms (lower quality)
+    if any(x in domain_lower for x in ['wordpress.com', 'blogspot', 'wix.com', 'weebly']):
+        score = 3
+        print(f"    ⚠️ Free blog platform")
+        return score
+    
+    # Skip clickbait patterns
+    if any(x in title_lower for x in ['doctors hate', 'secret cure', 'they dont want', 'big pharma hiding']):
+        score = 2
+        print(f"    🚫 Clickbait title pattern")
+        return score
+    
+    # Everything else: neutral - let funding analysis decide
+    print(f"    → Will analyze funding to determine credibility")
+    return score
+
+def find_counter_perspective(title, main_domain):
+    """Find ONE counter-perspective using Tavily with minimal filtering"""
+    try:
+        # Extract topic from title
+        topic = ' '.join(title.split()[:8])
+        
+        # Search for counter-perspectives
+        query = f"{topic} debunked myth fact check evidence research"
+        
+        print(f"🔍 Searching for counter-perspective: {query[:60]}...")
+        
+        response = tavily_client.search(
+            query=query,
+            max_results=5,
+            search_depth="basic"
+        )
+        
+        candidates = []
+        
+        # Evaluate candidates
+        print(f"\n  📋 Evaluating {len(response.get('results', []))} candidates...")
+        for i, result in enumerate(response.get('results', []), 1):
+            result_domain = extract_domain(result.get('url', ''))
+            
+            # Skip same domain
+            if not result_domain or result_domain == main_domain:
+                print(f"  [{i}] Skipped: {result_domain or 'invalid'} (same as main or invalid)")
+                continue
+            
+            print(f"\n  [{i}] Evaluating: {result_domain}")
+            
+            # Calculate promise score
+            promise_score = calculate_promise_score(result_domain, result)
+            
+            candidates.append({
+                'domain': result_domain,
+                'promise_score': promise_score,
+                'result': result
+            })
+            
+            print(f"      Promise score: {promise_score}/10")
+        
+        if not candidates:
+            print("\n⚠️  No valid counter-perspective candidates found")
+            return None
+        
+        # Sort by promise score and pick best
+        candidates.sort(key=lambda x: x['promise_score'], reverse=True)
+        best = candidates[0]
+        
+        print(f"\n🎯 Best candidate: {best['domain']} (score: {best['promise_score']}/10)")
+        
+        # Analyze the best candidate
+        counter_pub = get_or_research_publication(best['domain'])
+        
+        if counter_pub:
+            return {
+                'article': {
+                    'title': best['result'].get('title', 'Unknown'),
+                    'url': best['result'].get('url', ''),
+                    'snippet': best['result'].get('content', '')[:200]
+                },
+                'publication': counter_pub
+            }
+        
+        return None
+        
+    except Exception as e:
+        print(f"❌ Counter-perspective search failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
 @app.route('/analyze', methods=['POST'])
 def analyze():
     data = request.json
@@ -162,130 +233,127 @@ def analyze():
     else:
         print("✅ No common myths detected")
     
-    # 3. Get related articles from Google News
-    print("\n📰 Step 3: Finding related coverage...")
-    related_articles = get_related_articles(title)
+    # 3. Find counter-perspective
+    print("\n🔄 Step 3: Searching for counter-perspective...")
+    counter_perspective = find_counter_perspective(title, domain)
     
-    # 4. BRANCH: Analyze each related source
-    print(f"\n🌳 Step 4: Branching analysis of {len(related_articles)} related sources...")
-    analyzed_sources = []
-    
-    for i, article in enumerate(related_articles, 1):
-        related_domain = extract_domain(article['url'])
-        
-        if not related_domain or related_domain == domain:
-            # Skip same domain or invalid URLs
-            continue
-        
-        print(f"  [{i}/{len(related_articles)}] Analyzing {related_domain}...")
-        related_pub = get_or_research_publication(related_domain)
-        
-        if related_pub:
-            analyzed_sources.append({
-                'article': article,
-                'publication': related_pub
-            })
-    
-    # 5. Calculate consensus across sources
-    print("\n📊 Step 5: Calculating consensus...")
-    consensus = calculate_consensus(main_publication, analyzed_sources)
+    # 4. Generate analysis
+    print("\n📊 Step 4: Generating comparative analysis...")
+    analysis = generate_analysis(main_publication, counter_perspective)
     
     print(f"\n{'='*60}")
     print(f"✅ ANALYSIS COMPLETE")
     print(f"   Main credibility: {main_publication.get('credibility_score', 'N/A')}/10")
-    print(f"   Related sources analyzed: {len(analyzed_sources)}")
-    print(f"   Consensus: {consensus.get('agreement_level', 'N/A')}")
+    if counter_perspective:
+        counter_name = counter_perspective['publication'].get('name', 'Unknown')
+        counter_score = counter_perspective['publication'].get('credibility_score', 'N/A')
+        print(f"   Counter source: {counter_name}")
+        print(f"   Counter credibility: {counter_score}/10")
+        if isinstance(counter_score, (int, float)) and isinstance(main_publication.get('credibility_score', 0), (int, float)):
+            diff = abs(counter_score - main_publication.get('credibility_score', 0))
+            print(f"   Credibility gap: {diff:.1f} points")
+    else:
+        print(f"   Counter source: Not found")
     print(f"{'='*60}\n")
     
     return jsonify({
         'main_publication': main_publication,
         'myths': detected_myths,
-        'related_sources': analyzed_sources,
-        'consensus': consensus,
-        'missing_context': generate_missing_context(main_publication, analyzed_sources)
+        'counter_perspective': counter_perspective,
+        'analysis': analysis,
+        'missing_context': generate_missing_context(main_publication, counter_perspective)
     })
 
-def calculate_consensus(main_pub, related_sources):
-    """Calculate consensus and credibility across all sources"""
-    if not related_sources:
-        return {
-            'agreement_level': 'No related sources found',
-            'average_credibility': main_pub.get('credibility_score', 0),
-            'high_credibility_sources': 0,
-            'low_credibility_sources': 0,
-            'consensus_strength': 'Unknown'
-        }
-    
-    # Collect all credibility scores
-    all_scores = [main_pub.get('credibility_score', 0)]
-    for source in related_sources:
-        score = source.get('publication', {}).get('credibility_score', 0)
-        if score > 0:  # Only count valid scores
-            all_scores.append(score)
-    
-    if len(all_scores) == 0:
-        avg_credibility = 0
-    else:
-        avg_credibility = sum(all_scores) / len(all_scores)
-    
-    # Count high vs low credibility
-    high_cred = len([s for s in all_scores if s >= 7])
-    low_cred = len([s for s in all_scores if s < 5])
-    
-    # Determine consensus strength
-    if len(all_scores) > 1:
-        score_range = max(all_scores) - min(all_scores)
-        if score_range < 2:
-            consensus = 'Strong agreement'
-            agreement = 'high'
-        elif score_range < 4:
-            consensus = 'Moderate agreement'
-            agreement = 'moderate'
-        else:
-            consensus = 'Conflicting assessments'
-            agreement = 'low'
-    else:
-        consensus = 'Insufficient sources'
-        agreement = 'unknown'
-    
-    return {
-        'agreement_level': agreement,
-        'average_credibility': round(avg_credibility, 1),
-        'high_credibility_sources': high_cred,
-        'low_credibility_sources': low_cred,
-        'consensus_strength': consensus,
-        'total_sources_analyzed': len(all_scores)
+def generate_analysis(main_pub, counter):
+    """Generate comparative analysis"""
+    analysis = {
+        'main_credibility': main_pub.get('credibility_score', 0),
+        'main_red_flags': main_pub.get('red_flags', []),
+        'main_green_flags': main_pub.get('green_flags', []),
+        'main_funding': main_pub.get('funding_sources', []),
+        'main_conflicts': main_pub.get('conflicts_of_interest', [])
     }
+    
+    if counter:
+        counter_pub = counter.get('publication', {})
+        main_score = main_pub.get('credibility_score', 0)
+        counter_score = counter_pub.get('credibility_score', 0)
+        
+        analysis['counter_credibility'] = counter_score
+        analysis['counter_red_flags'] = counter_pub.get('red_flags', [])
+        analysis['counter_green_flags'] = counter_pub.get('green_flags', [])
+        analysis['counter_funding'] = counter_pub.get('funding_sources', [])
+        analysis['counter_conflicts'] = counter_pub.get('conflicts_of_interest', [])
+        analysis['credibility_difference'] = abs(main_score - counter_score)
+        
+        # Generate warning based on credibility gap
+        if analysis['credibility_difference'] >= 3:
+            if counter_score > main_score:
+                analysis['warning'] = "Higher credibility source presents different perspective"
+                analysis['recommendation'] = "Consider the counter-perspective from more credible source"
+            else:
+                analysis['warning'] = "Lower credibility counter-source found"
+                analysis['recommendation'] = "Main source appears more reliable"
+        elif analysis['credibility_difference'] >= 1.5:
+            analysis['warning'] = "Moderate credibility difference"
+            analysis['recommendation'] = "Compare funding sources and conflicts of interest"
+        else:
+            analysis['warning'] = None
+            analysis['recommendation'] = "Similar credibility - check funding transparency"
+    else:
+        analysis['counter_credibility'] = None
+        analysis['counter_red_flags'] = []
+        analysis['counter_green_flags'] = []
+        analysis['counter_funding'] = []
+        analysis['counter_conflicts'] = []
+        analysis['credibility_difference'] = 0
+        analysis['warning'] = "No counter-perspective found"
+        analysis['recommendation'] = "Search for alternative sources independently"
+    
+    return analysis
 
-def generate_missing_context(main_pub, related_sources):
-    """Generate list of missing context based on analysis"""
+def generate_missing_context(main_pub, counter):
+    """Generate list of missing context"""
     context = []
     
-    # Check for funding transparency
-    if main_pub.get('funding_transparency') == 'low' or main_pub.get('funding_transparency') == 'none':
+    # Main source issues
+    if main_pub.get('funding_transparency') in ['low', 'none', 'unknown']:
         context.append("Funding sources unclear or undisclosed")
     
-    # Check for conflicts
     if main_pub.get('conflicts_of_interest'):
-        context.append("Financial conflicts of interest present")
+        conflicts = main_pub.get('conflicts_of_interest', [])
+        if conflicts:
+            context.append(f"Conflicts: {conflicts[0]}")
     
-    # Check for source links
     if not main_pub.get('primary_source_links'):
         context.append("Article may not link to original research")
     
-    # Check consensus
-    if len(related_sources) < 3:
-        context.append("Limited coverage from other sources")
+    # Counter-perspective insights
+    if counter:
+        counter_pub = counter.get('publication', {})
+        counter_cred = counter_pub.get('credibility_score', 0)
+        main_cred = main_pub.get('credibility_score', 0)
+        
+        if counter_cred > main_cred + 2:
+            context.append("Alternative source has significantly higher credibility")
+        
+        # Compare funding
+        main_funding = set(main_pub.get('funding_sources', []))
+        counter_funding = set(counter_pub.get('funding_sources', []))
+        
+        if 'Independent' in counter_funding and 'Independent' not in main_funding:
+            context.append("Counter-source is independently funded")
+    else:
+        context.append("No alternative perspectives found - single narrative")
     
-    # Default contexts
+    # Defaults
     if not context:
         context = [
-            "Consider checking original study details",
-            "Look for potential funding sources",
-            "Check if other reputable sources confirm"
+            "Consider checking original study",
+            "Look for independent verification"
         ]
     
-    return context
+    return context[:5]  # Limit to 5 items
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

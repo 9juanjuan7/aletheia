@@ -43,5 +43,48 @@
       "https://grokipedia.com/page/Medical_News_Today",
       "https://mediabiasfactcheck.com/medical-news-today/"
     ]
+  },
+  {
+    "name": "Worldwide Cancer Research",
+    "domain": "worldwidecancerresearch.org",
+    "credibility_score": 3.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Unknown",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Research funding organizations"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "cancer research"
+    ],
+    "last_updated": "2025-12-27",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/Worldwide_Cancer_Research",
+      "https://www.worldwidecancerresearch.org/media/dqdjq3dq/worldwide-cancer-research-final-accounts-311224-signed.pdf",
+      "https://www.worldwidecancerresearch.org/media/fhwph55a/worldwide-cancer-research-final-signed-accounts-311222.pdf"
+    ],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
   }
 ]
