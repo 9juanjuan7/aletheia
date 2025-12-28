@@ -49,5 +49,7 @@ Aletheia is a Chrome extension that helps you evaluate health information by fol
 ### Installation
 
 1. **Clone the repo**
-'''git clone https://github.com/yourusername/aletheia.git
-cd aletheia'''
+```
+git clone https://github.com/yourusername/aletheia.git
+cd aletheia
+```
