@@ -112,7 +112,7 @@ Server runs on http://localhost:5000
 **Key Principle:** Funding independence matters more than impressive credentials.
 
 ## 📁 Project Structure
-
+```
 aletheia/
 ├── backend/
 │ ├── app.py # Flask API
@@ -129,7 +129,7 @@ aletheia/
 ├── sidebar.html
 ├── sidebar.js
 └── sidebar.css
-
+```
 ## 🗺️ Roadmap
 
 - [x] Chrome extension with manual analysis
@@ -162,3 +162,4 @@ Aletheia is a research tool. Always consult qualified healthcare professionals f
 **Built with skepticism. Powered by independence.**
 
 *"Follow the money, find the truth."*
+
