@@ -73,7 +73,7 @@ TAVILY_API_KEY=your_tavily_key
 ```
 python app.py
 ```
-Server runs on http://localhost:5000
+- Server runs on http://localhost:5000
 
 5. **Install extension**
 - Open Chrome → `chrome://extensions/`
@@ -162,4 +162,5 @@ Aletheia is a research tool. Always consult qualified healthcare professionals f
 **Built with skepticism. Powered by independence.**
 
 *"Follow the money, find the truth."*
+
 
