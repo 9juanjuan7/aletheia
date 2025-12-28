@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import os
-import requests
+import feedparser
 from dotenv import load_dotenv
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 from services.publication_researcher import PublicationResearcher
 
 load_dotenv()
@@ -22,40 +22,110 @@ with open('data/myths.json', 'r') as f:
 # Initialize AI researcher
 researcher = PublicationResearcher()
 
-# API keys
-NEWS_API_KEY = os.getenv('NEWS_API_KEY', '')
+def is_publication_complete(publication):
+    """Check if publication data is complete enough to use"""
+    if not publication:
+        return False
+    
+    # Required fields that should not be empty
+    required_fields = ['name', 'domain', 'credibility_score']
+    
+    # Check if all required fields exist and are not empty/None
+    for field in required_fields:
+        if field not in publication or not publication[field]:
+            return False
+    
+    # Check if credibility score is reasonable (not default/placeholder)
+    if publication.get('credibility_score', 0) <= 0 or publication.get('credibility_score', 0) > 10:
+        return False
+    
+    # Check if we have funding info (critical for credibility)
+    if not publication.get('funding_sources') and publication.get('ownership') == 'Unknown':
+        return False
+    
+    return True
 
 def get_related_articles(title):
-    """Find related articles using NewsAPI"""
-    if not NEWS_API_KEY:
-        return []
-    
+    """Find related articles using Google News RSS (free & unlimited)"""
     try:
-        # Extract key terms from title
-        keywords = ' '.join(title.split()[:5])
+        # Extract key terms from title (first 5-6 meaningful words)
+        keywords = ' '.join(title.split()[:6])
         
-        response = requests.get(
-            'https://newsapi.org/v2/everything',
-            params={
-                'q': keywords,
-                'sortBy': 'relevancy',
-                'pageSize': 5,
-                'apiKey': NEWS_API_KEY
-            },
-            timeout=5
-        )
+        # Google News RSS search URL
+        search_query = quote(keywords)
+        rss_url = f"https://news.google.com/rss/search?q={search_query}&hl=en-US&gl=US&ceid=US:en"
         
-        if response.status_code == 200:
-            articles = response.json().get('articles', [])
-            return [{
-                'title': art['title'],
-                'url': art['url'],
-                'source': art['source']['name']
-            } for art in articles[:5]]
+        print(f"📰 Searching Google News for: {keywords}")
+        
+        # Parse RSS feed
+        feed = feedparser.parse(rss_url)
+        
+        articles = []
+        for entry in feed.entries[:5]:  # Get top 5 results
+            # Extract actual source from Google News
+            source_name = entry.source.title if hasattr(entry, 'source') else 'Unknown'
+            
+            articles.append({
+                'title': entry.title,
+                'url': entry.link,
+                'source': source_name,
+                'published': entry.published if hasattr(entry, 'published') else None
+            })
+        
+        print(f"📰 Found {len(articles)} related articles")
+        return articles
+        
     except Exception as e:
-        print(f"NewsAPI error: {e}")
+        print(f"❌ Google News RSS error: {e}")
+        return []
+
+def extract_domain(url):
+    """Extract clean domain from URL"""
+    try:
+        parsed = urlparse(url)
+        domain = parsed.netloc.replace('www.', '')
+        # Remove Google News redirect
+        if 'news.google.com' in domain:
+            return None
+        return domain
+    except:
+        return None
+
+def get_or_research_publication(domain):
+    """Get publication from cache or research it"""
+    if not domain:
+        return None
     
-    return []
+    # Check cache
+    for pub in PUBLICATIONS:
+        if pub.get('domain') == domain:
+            if is_publication_complete(pub):
+                print(f"✅ Using cached data for {domain}")
+                return pub
+            else:
+                print(f"🔄 Cached data incomplete for {domain}, re-researching...")
+                break
+    
+    # Research needed
+    print(f"🔍 Researching new source: {domain}...")
+    new_pub = researcher.research(domain)
+    
+    # Update cache
+    updated = False
+    for i, pub in enumerate(PUBLICATIONS):
+        if pub.get('domain') == domain:
+            PUBLICATIONS[i] = new_pub
+            updated = True
+            break
+    
+    if not updated:
+        PUBLICATIONS.append(new_pub)
+    
+    # Save to file
+    with open('data/publications.json', 'w') as f:
+        json.dump(PUBLICATIONS, f, indent=2)
+    
+    return new_pub
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
@@ -63,33 +133,22 @@ def analyze():
     url = data.get('url', '')
     title = data.get('title', '')
     
-    domain = urlparse(url).netloc.replace('www.', '')
+    domain = extract_domain(url)
     
-    # Check cache first
-    publication = None
-    pub_index = None
-    for i, pub in enumerate(PUBLICATIONS):
-        if pub['domain'] == domain:
-            publication = pub
-            pub_index = i
-            break
+    if not domain:
+        return jsonify({'error': 'Invalid URL'}), 400
     
-    # If not in cache, research with AI!
-    if not publication:
-        print(f"🔍 Researching {domain} with AI...")
-        publication = researcher.research(domain)
-        
-        # Save to cache for next time
-        PUBLICATIONS.append(publication)
-        with open('data/publications.json', 'w') as f:
-            json.dump(PUBLICATIONS, f, indent=2)
-        print(f"✅ Saved {domain} to database")
-    else:
-        # Already in database
-        print(f"ℹ️ Found {domain} in cache")
-        # Future: Add re-research logic here if needed
+    print(f"\n{'='*60}")
+    print(f"🔍 ANALYZING: {title[:50]}...")
+    print(f"📍 Domain: {domain}")
+    print(f"{'='*60}\n")
     
-    # Detect myths
+    # 1. Analyze main publication
+    print("📊 Step 1: Analyzing main publication...")
+    main_publication = get_or_research_publication(domain)
+    
+    # 2. Detect myths in title
+    print("\n🔍 Step 2: Checking for common health myths...")
     detected_myths = []
     title_lower = title.lower()
     for myth in MYTHS:
@@ -98,19 +157,135 @@ def analyze():
                 detected_myths.append(myth)
                 break
     
-    # Get related articles
+    if detected_myths:
+        print(f"⚠️  Found {len(detected_myths)} potential myth(s)")
+    else:
+        print("✅ No common myths detected")
+    
+    # 3. Get related articles from Google News
+    print("\n📰 Step 3: Finding related coverage...")
     related_articles = get_related_articles(title)
     
+    # 4. BRANCH: Analyze each related source
+    print(f"\n🌳 Step 4: Branching analysis of {len(related_articles)} related sources...")
+    analyzed_sources = []
+    
+    for i, article in enumerate(related_articles, 1):
+        related_domain = extract_domain(article['url'])
+        
+        if not related_domain or related_domain == domain:
+            # Skip same domain or invalid URLs
+            continue
+        
+        print(f"  [{i}/{len(related_articles)}] Analyzing {related_domain}...")
+        related_pub = get_or_research_publication(related_domain)
+        
+        if related_pub:
+            analyzed_sources.append({
+                'article': article,
+                'publication': related_pub
+            })
+    
+    # 5. Calculate consensus across sources
+    print("\n📊 Step 5: Calculating consensus...")
+    consensus = calculate_consensus(main_publication, analyzed_sources)
+    
+    print(f"\n{'='*60}")
+    print(f"✅ ANALYSIS COMPLETE")
+    print(f"   Main credibility: {main_publication.get('credibility_score', 'N/A')}/10")
+    print(f"   Related sources analyzed: {len(analyzed_sources)}")
+    print(f"   Consensus: {consensus.get('agreement_level', 'N/A')}")
+    print(f"{'='*60}\n")
+    
     return jsonify({
-        'publication': publication,
+        'main_publication': main_publication,
         'myths': detected_myths,
-        'related_articles': related_articles,
-        'missing_context': [
-            "Study funding sources",
-            "Conflicting research",
-            "Sample size limitations"
-        ]
+        'related_sources': analyzed_sources,
+        'consensus': consensus,
+        'missing_context': generate_missing_context(main_publication, analyzed_sources)
     })
+
+def calculate_consensus(main_pub, related_sources):
+    """Calculate consensus and credibility across all sources"""
+    if not related_sources:
+        return {
+            'agreement_level': 'No related sources found',
+            'average_credibility': main_pub.get('credibility_score', 0),
+            'high_credibility_sources': 0,
+            'low_credibility_sources': 0,
+            'consensus_strength': 'Unknown'
+        }
+    
+    # Collect all credibility scores
+    all_scores = [main_pub.get('credibility_score', 0)]
+    for source in related_sources:
+        score = source.get('publication', {}).get('credibility_score', 0)
+        if score > 0:  # Only count valid scores
+            all_scores.append(score)
+    
+    if len(all_scores) == 0:
+        avg_credibility = 0
+    else:
+        avg_credibility = sum(all_scores) / len(all_scores)
+    
+    # Count high vs low credibility
+    high_cred = len([s for s in all_scores if s >= 7])
+    low_cred = len([s for s in all_scores if s < 5])
+    
+    # Determine consensus strength
+    if len(all_scores) > 1:
+        score_range = max(all_scores) - min(all_scores)
+        if score_range < 2:
+            consensus = 'Strong agreement'
+            agreement = 'high'
+        elif score_range < 4:
+            consensus = 'Moderate agreement'
+            agreement = 'moderate'
+        else:
+            consensus = 'Conflicting assessments'
+            agreement = 'low'
+    else:
+        consensus = 'Insufficient sources'
+        agreement = 'unknown'
+    
+    return {
+        'agreement_level': agreement,
+        'average_credibility': round(avg_credibility, 1),
+        'high_credibility_sources': high_cred,
+        'low_credibility_sources': low_cred,
+        'consensus_strength': consensus,
+        'total_sources_analyzed': len(all_scores)
+    }
+
+def generate_missing_context(main_pub, related_sources):
+    """Generate list of missing context based on analysis"""
+    context = []
+    
+    # Check for funding transparency
+    if main_pub.get('funding_transparency') == 'low' or main_pub.get('funding_transparency') == 'none':
+        context.append("Funding sources unclear or undisclosed")
+    
+    # Check for conflicts
+    if main_pub.get('conflicts_of_interest'):
+        context.append("Financial conflicts of interest present")
+    
+    # Check for source links
+    if not main_pub.get('primary_source_links'):
+        context.append("Article may not link to original research")
+    
+    # Check consensus
+    if len(related_sources) < 3:
+        context.append("Limited coverage from other sources")
+    
+    # Default contexts
+    if not context:
+        context = [
+            "Consider checking original study details",
+            "Look for potential funding sources",
+            "Check if other reputable sources confirm"
+        ]
+    
+    return context
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

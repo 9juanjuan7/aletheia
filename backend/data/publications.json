@@ -32,13 +32,17 @@
     ]
   },
   {
-    "domain": "medicalnewstoday.com",
-    "name": "medicalnewstoday.com",
-    "owner": "Research failed - unable to determine",
-    "funding_model": "Unknown",
+    "name": "Medical News Today",
+    "owner": "Healthline Media UK Ltd., a subsidiary of Healthline Media, Inc.",
+    "funding_model": "Advertising",
     "major_advertisers": [],
     "conflicts": [],
-    "sources": []
+    "domain": "medicalnewstoday.com",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Medical_News_Today",
+      "https://grokipedia.com/page/Medical_News_Today",
+      "https://mediabiasfactcheck.com/medical-news-today/"
+    ]
   },
   {
     "domain": "platform.openai.com",
