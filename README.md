@@ -53,3 +53,112 @@ Aletheia is a Chrome extension that helps you evaluate health information by fol
 git clone https://github.com/yourusername/aletheia.git
 cd aletheia
 ```
+
+2. **Set up backend**
+```
+cd backend
+python -m venv venv
+source venv/bin/activate # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+3. **Configure API keys**
+Create `backend/.env`:
+```
+OPENAI_API_KEY=your_openai_key
+TAVILY_API_KEY=your_tavily_key
+```
+
+4. **Run backend**
+```
+python app.py
+```
+Server runs on http://localhost:5000
+
+5. **Install extension**
+- Open Chrome → `chrome://extensions/`
+- Enable "Developer mode"
+- Click "Load unpacked" → Select `extension/` folder
+- Pin Aletheia icon to toolbar
+
+### Usage
+
+1. Visit any health article (e.g., medicalnewstoday.com)
+2. Click the Aletheia extension icon
+3. View credibility analysis, funding sources, and counter-perspectives
+
+## 📊 How It Works
+
+1. **User clicks extension** → Analysis begins
+2. **Research publication** → AI searches for ownership, funding, conflicts
+3. **Calculate credibility** → Score based on funding transparency
+4. **Find counter-perspective** → Search for alternative viewpoints
+5. **Compare sources** → Show credibility gaps and recommendations
+
+## 🎓 Credibility Scoring
+
+**Start at 5.0, then adjust:**
+
+✅ **Add Points:**
+- +2.0: Links to peer-reviewed studies
+- +2.0: Independent/nonprofit funding
+- +1.0: Zero retractions
+
+❌ **Subtract Points:**
+- -3.0: Owned by industry they cover
+- -2.0: Pharma/supplement sponsorship
+- -2.0: No source citations
+
+**Key Principle:** Funding independence matters more than impressive credentials.
+
+## 📁 Project Structure
+
+aletheia/
+├── backend/
+│ ├── app.py # Flask API
+│ ├── services/
+│ │ └── publication_researcher.py
+│ ├── data/
+│ │ ├── publications.json # Growing database
+│ │ └── myths.json
+│ └── requirements.txt
+└── extension/
+├── manifest.json
+├── background.js
+└── sidebar/
+├── sidebar.html
+├── sidebar.js
+└── sidebar.css
+
+## 🗺️ Roadmap
+
+- [x] Chrome extension with manual analysis
+- [x] Publication research & credibility scoring
+- [x] Counter-perspective search
+- [x] Funding transparency analysis
+- [ ] PostgreSQL migration
+- [ ] Topic clustering & consensus tracking
+- [ ] Community features
+- [ ] Blockchain integration (Sui)
+
+## 📝 License
+
+Open Source (TBD)
+
+## 🤝 Contributing
+
+Contributions welcome! This project needs:
+- Frontend developers
+- Data scientists
+- Medical researchers
+- Anyone passionate about exposing health misinformation
+
+## ⚠️ Disclaimer
+
+Aletheia is a research tool. Always consult qualified healthcare professionals for medical decisions.
+
+---
+
+**Built with skepticism. Powered by independence.**
+
+*"Follow the money, find the truth."*
