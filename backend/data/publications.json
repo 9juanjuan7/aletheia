@@ -86,5 +86,86 @@
       "https://www.worldwidecancerresearch.org/media/fhwph55a/worldwide-cancer-research-final-signed-accounts-311222.pdf"
     ],
     "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "Sagely Health",
+    "domain": "sagelyhealth.com",
+    "credibility_score": 3.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Unknown",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by pharma company X"
+    ],
+    "industry_ties": [
+      "Biotech industry"
+    ],
+    "author_credentials": "Dr. Jason Sager, MD; staff writers",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "cancer treatment"
+    ],
+    "last_updated": "2025-12-27",
+    "research_sources": [
+      "https://www.linkedin.com/company/sagely-health",
+      "https://www.crunchbase.com/person/jason-sager-cac4",
+      "https://www.sagelyhealth.com/about-sagely-health"
+    ],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "Does 'ownership' or 'control' of a business match contribution to ...",
+    "domain": "econ.iastate.edu",
+    "credibility_score": 5.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Iowa State University",
+    "funding_sources": [
+      "Unknown"
+    ],
+    "conflicts_of_interest": [
+      "Unknown"
+    ],
+    "industry_ties": [
+      "Unknown"
+    ],
+    "author_credentials": "Unknown",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Unknown",
+    "red_flags": [
+      "No source citations",
+      "Unknown funding sources"
+    ],
+    "green_flags": [
+      "Affiliated with a recognized university"
+    ],
+    "expertise_areas": [
+      "economics"
+    ],
+    "last_updated": "2025-12-27",
+    "research_sources": [
+      "https://www.econ.iastate.edu/ask-an-economist/does-ownership-or-control-business-match-contribution-capital-or-input",
+      "https://agpolicyreview.card.iastate.edu/spring-2024/corporate-and-foreign-land-ownership-iowa",
+      "https://www.econ.iastate.edu/about"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or lack of sourcing | Strengths: Affiliated with a recognized university | Concerns: No source citations, Unknown funding sources"
   }
 ]

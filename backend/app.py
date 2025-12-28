@@ -88,99 +88,168 @@ def get_or_research_publication(domain):
     return new_pub
 
 def calculate_promise_score(domain, result):
-    """Minimal filtering - just skip obvious junk"""
+    """Improved promise score with better heuristics"""
     score = 5.0
     
-    # Check cache FIRST (most reliable indicator)
+    # Check cache FIRST
     for pub in PUBLICATIONS:
         if pub.get('domain') == domain:
             cached_score = pub.get('credibility_score', 0)
             if cached_score > 0:
-                print(f"    ✅ Cached credibility: {cached_score}/10")
+                print(f"    ✅ Cached: {domain} = {cached_score}/10")
                 return cached_score
     
-    # Filter obvious junk
     domain_lower = domain.lower()
     title_lower = result.get('title', '').lower()
+    content_lower = result.get('content', '').lower()
     
-    # Skip obvious commercial sites
-    if any(x in domain_lower for x in ['shop', 'store', 'buy', 'order', 'supplement', 'pills']):
+    # HIGH TRUST domains
+    if any(x in domain_lower for x in ['nih.gov', 'cdc.gov', 'cancer.gov', 'fda.gov', 'who.int']):
+        score += 2
+        print(f"    +2 Government health: {domain}")
+    
+    if any(x in domain_lower for x in ['nejm.org', 'thelancet.com', 'jamanetwork.com', 'nature.com', 'science.org', 'cell.com', 'bmj.com']):
+        score += 3
+        print(f"    +3 Top journal: {domain}")
+    
+    if any(x in domain_lower for x in ['mayoclinic.org', 'clevelandclinic.org', 'hopkinsmedicine.org', 'mdanderson.org']):
+        score += 2
+        print(f"    +2 Medical center: {domain}")
+    
+    if any(x in domain_lower for x in ['snopes.com', 'factcheck.org', 'sciencebasedmedicine.org', 'healthfeedback.org']):
+        score += 2
+        print(f"    +2 Fact-checker: {domain}")
+    
+    if '.edu' in domain_lower:
+        score += 0.5
+        print(f"    +0.5 Academic (.edu): {domain}")
+    
+    # RED FLAGS
+    if any(x in domain_lower for x in ['shop', 'store', 'buy', 'order', 'supplement', 'pills', 'diet', 'cbd', 'vitamin']):
         score = 1
-        print(f"    🚫 Commercial/sales site")
+        print(f"    🚫 Commercial site: {domain}")
         return score
     
-    # Skip free blog platforms (lower quality)
-    if any(x in domain_lower for x in ['wordpress.com', 'blogspot', 'wix.com', 'weebly']):
-        score = 3
-        print(f"    ⚠️ Free blog platform")
+    if any(x in domain_lower for x in ['wordpress.com', 'blogspot', 'wix.com', 'weebly', 'medium.com']):
+        score -= 2
+        print(f"    -2 Blog platform: {domain}")
+    
+    if any(x in domain_lower for x in ['naturalnews', 'infowars', 'beforeitsnews']):
+        score = 0
+        print(f"    🚫 Known misinformation: {domain}")
         return score
     
-    # Skip clickbait patterns
-    if any(x in title_lower for x in ['doctors hate', 'secret cure', 'they dont want', 'big pharma hiding']):
-        score = 2
-        print(f"    🚫 Clickbait title pattern")
-        return score
+    # Content quality signals
+    if any(x in content_lower for x in ['peer-reviewed', 'peer reviewed', 'clinical trial', 'randomized controlled']):
+        score += 1.5
+        print(f"    +1.5 Scientific content")
     
-    # Everything else: neutral - let funding analysis decide
-    print(f"    → Will analyze funding to determine credibility")
-    return score
+    if any(x in content_lower for x in ['independent', 'nonprofit', 'non-profit']):
+        score += 1
+        print(f"    +1 Independent/nonprofit mentioned")
+    
+    if any(x in title_lower for x in ['study shows', 'research finds', 'according to', 'evidence']):
+        score += 0.5
+        print(f"    +0.5 Evidence-based title")
+    
+    # Negative content signals
+    if any(x in title_lower for x in ['secret', 'doctors hate', 'they dont want', 'shocking', 'miracle']):
+        score -= 2
+        print(f"    -2 Clickbait title")
+    
+    if any(x in content_lower for x in ['sponsored', 'partner content', 'affiliate']):
+        score -= 1
+        print(f"    -1 Sponsored content")
+    
+    return min(10, max(0, score))
 
 def find_counter_perspective(title, main_domain):
-    """Find ONE counter-perspective using Tavily with minimal filtering"""
+    """Find ONE counter-perspective using improved search strategy"""
     try:
-        # Extract topic from title
-        topic = ' '.join(title.split()[:8])
+        # Extract topic words
+        topic_words = ' '.join(title.split()[:6])
         
-        # Search for counter-perspectives
-        query = f"{topic} debunked myth fact check evidence research"
+        # Build multiple search strategies
+        search_queries = [
+            f"{topic_words} fact check scientific evidence",
+            f"{topic_words} medical research consensus",
+            f"{topic_words} peer reviewed study"
+        ]
         
-        print(f"🔍 Searching for counter-perspective: {query[:60]}...")
+        print(f"🔍 Searching for counter-perspective with {len(search_queries)} strategies...")
         
-        response = tavily_client.search(
-            query=query,
-            max_results=5,
-            search_depth="basic"
-        )
+        all_candidates = []
         
-        candidates = []
-        
-        # Evaluate candidates
-        print(f"\n  📋 Evaluating {len(response.get('results', []))} candidates...")
-        for i, result in enumerate(response.get('results', []), 1):
-            result_domain = extract_domain(result.get('url', ''))
-            
-            # Skip same domain
-            if not result_domain or result_domain == main_domain:
-                print(f"  [{i}] Skipped: {result_domain or 'invalid'} (same as main or invalid)")
+        for query in search_queries:
+            try:
+                print(f"\n  📡 Query: {query[:60]}...")
+                
+                response = tavily_client.search(
+                    query=query,
+                    max_results=3,
+                    search_depth="basic"
+                )
+                
+                # Evaluate candidates from this query
+                for result in response.get('results', []):
+                    result_domain = extract_domain(result.get('url', ''))
+                    
+                    if not result_domain or result_domain == main_domain:
+                        continue
+                    
+                    # Skip if already evaluated
+                    if any(c['domain'] == result_domain for c in all_candidates):
+                        continue
+                    
+                    promise_score = calculate_promise_score(result_domain, result)
+                    
+                    all_candidates.append({
+                        'domain': result_domain,
+                        'promise_score': promise_score,
+                        'result': result,
+                        'query': query
+                    })
+                
+                # Stop early if we found a good candidate (score >= 7)
+                if any(c['promise_score'] >= 7 for c in all_candidates):
+                    print(f"  ✅ Found high-quality candidate, stopping search")
+                    break
+                    
+            except Exception as e:
+                print(f"  ⚠️ Search query failed: {e}")
                 continue
-            
-            print(f"\n  [{i}] Evaluating: {result_domain}")
-            
-            # Calculate promise score
-            promise_score = calculate_promise_score(result_domain, result)
-            
-            candidates.append({
-                'domain': result_domain,
-                'promise_score': promise_score,
-                'result': result
-            })
-            
-            print(f"      Promise score: {promise_score}/10")
         
-        if not candidates:
+        if not all_candidates:
             print("\n⚠️  No valid counter-perspective candidates found")
             return None
         
-        # Sort by promise score and pick best
-        candidates.sort(key=lambda x: x['promise_score'], reverse=True)
-        best = candidates[0]
+        # Sort by promise score
+        all_candidates.sort(key=lambda x: x['promise_score'], reverse=True)
+        
+        print(f"\n  📊 Evaluated {len(all_candidates)} total candidates")
+        print(f"  🏆 Top 3 scores: {[c['promise_score'] for c in all_candidates[:3]]}")
+        
+        best = all_candidates[0]
+        
+        # Only analyze if score is reasonable (>= 4)
+        if best['promise_score'] < 4:
+            print(f"\n⚠️  Best candidate score too low ({best['promise_score']}/10), skipping")
+            return None
         
         print(f"\n🎯 Best candidate: {best['domain']} (score: {best['promise_score']}/10)")
+        print(f"   From query: {best['query'][:60]}...")
         
         # Analyze the best candidate
         counter_pub = get_or_research_publication(best['domain'])
         
         if counter_pub:
+            # Only return if counter source is actually better or comparable
+            counter_score = counter_pub.get('credibility_score', 0)
+            
+            if counter_score < 4:
+                print(f"⚠️  Counter source credibility too low ({counter_score}/10), discarding")
+                return None
+            
             return {
                 'article': {
                     'title': best['result'].get('title', 'Unknown'),
