@@ -1,19 +1,46 @@
 [
   {
-    "domain": "healthline.com",
     "name": "Healthline",
-    "owner": "Red Ventures",
-    "funding_model": "Advertising (primary) + affiliate commissions",
-    "major_advertisers": [
-      "Pharmaceutical companies",
-      "Supplement brands",
-      "Health insurance providers"
+    "domain": "healthline.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Red Ventures",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
     ],
-    "credibility_rating": "Mostly Factual",
-    "conflicts": [
-      "Earns commission on supplement and product sales",
-      "Heavy affiliate marketing throughout articles"
-    ]
+    "conflicts_of_interest": [
+      "Owned by Red Ventures, which has ties to various industries"
+    ],
+    "industry_ties": [
+      "Food industry",
+      "Supplement industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts due to ownership"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://pitchbook.com/profiles/company/51708-52",
+      "https://en.wikipedia.org/wiki/Healthline",
+      "https://www.businesswire.com/news/home/20200814005329/en/Healthline-Media-Acquires-PsychCentral-Bolstering-Healthlines-Role-as-the-Top-Digital-Health-Publisher"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts due to ownership"
   },
   {
     "domain": "webmd.com",
@@ -717,5 +744,715 @@
       "https://www.thelancet.com/footer-terms"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "MD Anderson Cancer Center",
+    "domain": "mdanderson.org",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "The University of Texas System",
+    "funding_sources": [
+      "Pharmaceutical sponsorship",
+      "Industry contracts"
+    ],
+    "conflicts_of_interest": [
+      "Licensing agreements with pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 1,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "cancer research",
+      "patient care"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.mdanderson.org/newsroom/company-launched-by-md-anderson-to-be-acquired-by-abbott.h00-158831223.html",
+      "https://www.mdanderson.org/about-md-anderson/facts-history/institutional-profile.html",
+      "https://www.mdanderson.org/about-md-anderson/facts-history.html"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "Hospital Ownership and Financial Stability: A Matched Case ...",
+    "domain": "pubmed.ncbi.nlm.nih.gov",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Not specified",
+    "funding_sources": [],
+    "conflicts_of_interest": [],
+    "industry_ties": [],
+    "author_credentials": "Not specified",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [],
+    "green_flags": [
+      "No industry funding found",
+      "Independent research"
+    ],
+    "expertise_areas": [
+      "health",
+      "finance"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://pubmed.ncbi.nlm.nih.gov/34779183/",
+      "https://pubmed.ncbi.nlm.nih.gov/41079424/",
+      "https://www.ncbi.nlm.nih.gov/books/NBK217897/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: No industry funding found, Independent research"
+  },
+  {
+    "name": "Sustainable Nutrition Initiative",
+    "domain": "sustainablenutritioninitiative.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Riddet Institute, Massey University",
+    "funding_sources": [
+      "Gates Foundation"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to industry through funding"
+    ],
+    "industry_ties": [
+      "Food industry",
+      "Agricultural sector"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Gates Foundation funding",
+      "Potential industry influence"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://sustainablenutritioninitiative.com/about/",
+      "https://au.linkedin.com/company/sustainable-nutrition",
+      "https://sustainablenutritioninitiative.com/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Gates Foundation funding, Potential industry influence"
+  },
+  {
+    "name": "Cleveland Clinic Health Essentials",
+    "domain": "health.clevelandclinic.org",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Cleveland Clinic Foundation",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Healthcare services"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Limited source citations"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to some studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.guidestar.org/profile/34-0714585",
+      "https://my.clevelandclinic.org/-/scassets/files/org/about/financial-statements/form-990-ccf.pdf?la=en",
+      "https://en.wikipedia.org/wiki/Cleveland_Clinic"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to some studies | Concerns: Pharma-funded, Limited source citations"
+  },
+  {
+    "name": "Ownership of Corporations: A Review, Synthesis, and ...",
+    "domain": "researchgate.net",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Private company",
+    "funding_sources": [
+      "Corporate sponsorship",
+      "Advertising"
+    ],
+    "conflicts_of_interest": [
+      "Potential industry ties"
+    ],
+    "industry_ties": [
+      "Media and Information Services"
+    ],
+    "author_credentials": "Unknown authors, no clear credentials",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Lack of funding disclosure",
+      "No source links"
+    ],
+    "green_flags": [
+      "Some links to studies"
+    ],
+    "expertise_areas": [
+      "corporate ownership",
+      "business outcomes"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.researchgate.net/publication/299399282_Ownership_of_Corporations_A_Review_Synthesis_and_Research_Agenda",
+      "https://www.researchgate.net/publication/2589019_Corporate_Ownership_Around_The_World",
+      "https://pitchbook.com/profiles/company/50957-92"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some links to studies | Concerns: Lack of funding disclosure, No source links"
+  },
+  {
+    "name": "Harvard Health Publishing",
+    "domain": "health.harvard.edu",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Harvard University",
+    "funding_sources": [
+      "Federal and state government grants",
+      "Corporate sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Relaxed conflict-of-interest policies",
+      "Corporate funding for research"
+    ],
+    "industry_ties": [
+      "Corporate partnerships for funding"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate funding",
+      "Relaxed conflict-of-interest policies"
+    ],
+    "green_flags": [
+      "Links to studies",
+      "Some independent review"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.quora.com/Which-company-owns-Harvard-University-Can-you-purchase-shares-of-the-university-Who-are-the-owners-of-Harvard-Corporation",
+      "https://www.health.harvard.edu/about-us",
+      "https://www.harvard.edu/about/leadership-and-governance/harvard-corporation/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Links to studies, Some independent review | Concerns: Corporate funding, Relaxed conflict-of-interest policies"
+  },
+  {
+    "name": "After zealous marketing, confusion lingers over Purdue ...",
+    "domain": "purdue.edu",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Graham Holdings Co.",
+    "funding_sources": [
+      "Kaplan Higher Education",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by Graham Holdings Co.",
+      "Purdue Pharma's past"
+    ],
+    "industry_ties": [
+      "Education industry",
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate ownership",
+      "Potential bias from industry ties"
+    ],
+    "green_flags": [
+      "Some transparency in funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "education"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://indianaeconomicdigest.net/Content/Default/Major-Indiana-News/Article/After-zealous-marketing-confusion-lingers-over-Purdue-Global-s-ties-with-parent-campus/-3/5308/120240",
+      "https://www.jconline.com/story/news/local/purdue/2025/10/15/purdue-owns-purdue-global-but-for-profit-kaplan-retains-significant-role/86072044007/",
+      "https://en.wikipedia.org/wiki/Purdue_University_Global"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some transparency in funding, Links to studies | Concerns: Corporate ownership, Potential bias from industry ties"
+  },
+  {
+    "name": "Corporate Governance, Family Ownership and Earnings",
+    "domain": "semanticscholar.org",
+    "credibility_score": 5.0,
+    "primary_source_links": false,
+    "funding_transparency": "high",
+    "ownership": "Ai2",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to corporate sponsors"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Various authors, some with industry ties",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential corporate influence",
+      "Lack of primary source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to some studies"
+    ],
+    "expertise_areas": [
+      "corporate governance",
+      "financial performance"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.semanticscholar.org/paper/Corporate-Governance%2C-Family-Ownership-and-Earnings-Adiguzel/f15700514db3439ad9dfd3e33b201353cb1aa7c2",
+      "https://www.semanticscholar.org/paper/Impact-of-family-involvement-in-ownership-and-on-of-Charbel-Elie/f7f55d93e245a2785bfafd56dc8af278d658f1ba",
+      "https://pdfs.semanticscholar.org/49f1/a6f2f2198841790eb2fb2bf7057c7370f9db.pdf"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to some studies | Concerns: Potential corporate influence, Lack of primary source links"
+  },
+  {
+    "name": "Common ownership and corporate resilience",
+    "domain": "sciencedirect.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Elsevier",
+    "funding_sources": [
+      "Corporate sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Corporate governance"
+    ],
+    "author_credentials": "Various authors, potential corporate ties",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate-funded",
+      "Limited source links"
+    ],
+    "green_flags": [
+      "Some peer-reviewed content"
+    ],
+    "expertise_areas": [
+      "Corporate governance",
+      "Pharmaceutical economics"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.sciencedirect.com/science/article/abs/pii/S0927538X25003348",
+      "https://www.sciencedirect.com/science/article/abs/pii/S0275531917303719",
+      "https://www.sciencedirect.com/science/article/abs/pii/S0929119908000783"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some peer-reviewed content | Concerns: Corporate-funded, Limited source links"
+  },
+  {
+    "name": "News Medical",
+    "domain": "news-medical.net",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "AZoM.com Limited",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by AZoNetwork, which may have ties to industry"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Potential ties to food industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Limited source citations"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to some studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.news-medical.net/medical/terms",
+      "https://www.news-medical.net/suppliers/AZoNetwork-UK-Ltd.aspx",
+      "https://uk.linkedin.com/company/news-medical"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to some studies | Concerns: Pharma-funded, Limited source citations"
+  },
+  {
+    "name": "Dr. Axe Health Publications",
+    "domain": "draxe.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "high",
+    "ownership": "Ancient Nutrition",
+    "funding_sources": [
+      "Advertising",
+      "Supplement sales"
+    ],
+    "conflicts_of_interest": [
+      "Owned by Ancient Nutrition"
+    ],
+    "industry_ties": [
+      "Supplement industry",
+      "Health and wellness industry"
+    ],
+    "author_credentials": "Dr. Josh Axe, DC, DNM, CNS",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential bias due to ownership",
+      "Limited peer-reviewed sources"
+    ],
+    "green_flags": [
+      "Some links to studies",
+      "Discloses funding sources"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.thomasnelson.com/author/9879/dr-josh-axe/",
+      "https://draxe.com/about-dr-josh-axe/",
+      "https://www.crunchbase.com/organization/dr-axe"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some links to studies, Discloses funding sources | Concerns: Potential bias due to ownership, Limited peer-reviewed sources"
+  },
+  {
+    "name": "Stanford Medicine",
+    "domain": "med.stanford.edu",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "medium",
+    "ownership": "Stanford University",
+    "funding_sources": [
+      "Pfizer",
+      "Corporate Partners"
+    ],
+    "conflicts_of_interest": [
+      "Funding from pharmaceutical companies",
+      "Corporate partnerships"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Technology companies"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate funding",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://med.stanford.edu/medicalgiving/ways-to-give/corporate-partners.html",
+      "https://med.stanford.edu/about/highlights/history.html",
+      "https://med.stanford.edu/about.html"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Corporate funding, Potential conflicts of interest"
+  },
+  {
+    "name": "Cancer Council Australia",
+    "domain": "cancer.org.au",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Cancer Council Australia",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical industry"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential pharma influence",
+      "Limited peer review"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.cancer.org.au/assets/pdf/cca-financial-report-2023-2024",
+      "https://www.cancer.org.au/disclaimer",
+      "https://www.cancer.org.au/assets/pdf/cca-financial-report-2014-2015"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Potential pharma influence, Limited peer review"
+  },
+  {
+    "name": "City Dermatology Clinic",
+    "domain": "citydermatologyclinic.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "City Dermatology Ltd.",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Cosmetic industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Limited source citations"
+    ],
+    "green_flags": [
+      "Some patient reviews",
+      "Basic service descriptions"
+    ],
+    "expertise_areas": [
+      "dermatology",
+      "aesthetic treatments"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://uk.linkedin.com/company/city-dermatology-clinic",
+      "https://find-and-update.company-information.service.gov.uk/company/11409769/filing-history",
+      "https://citydermatologyclinic.com/about-us/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some patient reviews, Basic service descriptions | Concerns: Pharma-funded, Limited source citations"
+  },
+  {
+    "name": "American Cancer Society",
+    "domain": "cancer.org",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "American Cancer Society, Inc.",
+    "funding_sources": [
+      "Pharmaceutical sponsorship",
+      "Corporate donations"
+    ],
+    "conflicts_of_interest": [
+      "Partnerships with pharmaceutical companies like Pfizer"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Corporate sponsorship"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "cancer research"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.cancer.org/about-us/financial-governance-information/board-of-directors.html",
+      "https://www.cancer.org/about-us/who-we-are/our-history.html",
+      "https://www.owler.com/company/cancer"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Corporate sponsorship"
+  },
+  {
+    "name": "National Cancer Institute - Cancer.gov",
+    "domain": "cancer.gov",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "U.S. Government",
+    "funding_sources": [
+      "Federal funding",
+      "Grants"
+    ],
+    "conflicts_of_interest": [
+      "Potential industry ties through funding"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Medical experts and researchers",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential industry influence",
+      "Funding from pharmaceutical companies"
+    ],
+    "green_flags": [
+      "Discloses funding sources",
+      "Links to research studies"
+    ],
+    "expertise_areas": [
+      "cancer research",
+      "public health"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.cancer.gov/about-website",
+      "https://www.cancer.gov/about-nci/organization",
+      "https://www.cancer.gov/about-nci/overview"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding sources, Links to research studies | Concerns: Potential industry influence, Funding from pharmaceutical companies"
+  },
+  {
+    "name": "CA: A Cancer Journal for Clinicians",
+    "domain": "acsjournals.onlinelibrary.wiley.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "medium",
+    "ownership": "John Wiley and Sons",
+    "funding_sources": [
+      "Pharmaceutical sponsorship",
+      "Advertising"
+    ],
+    "conflicts_of_interest": [
+      "Owned by American Cancer Society, which has industry ties"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts with ACS"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "oncology",
+      "cancer treatment"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://onlinelibrary.wiley.com/doi/pdf/10.1002/anie.200604745",
+      "https://acsjournals.onlinelibrary.wiley.com/doi/full/10.3322%2Fcaac.21811",
+      "https://acsjournals.onlinelibrary.wiley.com/journal/15424863"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts with ACS"
   }
 ]

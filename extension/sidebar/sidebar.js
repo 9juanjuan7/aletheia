@@ -1,5 +1,10 @@
 const API_URL = 'http://localhost:5000';
 
+// Generate unique session ID
+function generateSessionId() {
+    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
 // Session storage for duplicate prevention
 function isAnalysisInProgress(url) {
     const inProgress = sessionStorage.getItem('aletheia_analyzing');
@@ -41,7 +46,109 @@ async function analyzeArticle(url, title) {
     document.getElementById('loading').style.display = 'block';
     document.getElementById('results').style.display = 'none';
     
+    const sessionId = generateSessionId();
+    
     try {
+        // Try streaming first
+        const response = await fetch(`${API_URL}/analyze-stream`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url, title, session_id: sessionId })
+        });
+        
+        if (!response.ok || !response.body) {
+            throw new Error('Streaming not supported, using fallback');
+        }
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        
+        while (true) {
+            const { done, value } = await reader.read();
+            
+            if (done) break;
+            
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n\n');
+            buffer = lines.pop(); // Keep incomplete line in buffer
+            
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const data = JSON.parse(line.slice(6));
+                    
+                    if (data.complete) {
+                        // Analysis complete
+                        displayResults(data.result, title, url);
+                    } else if (data.error) {
+                        // Error occurred
+                        document.getElementById('loading').innerHTML = `
+                            <p>⚠️ Error analyzing article.</p>
+                            <p>${data.error}</p>
+                        `;
+                    } else {
+                        // Progress update - NEW PART
+                        updateLoadingProgress(data.message, data.submessage);
+                    }
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('Streaming error, using fallback:', error);
+        fallbackAnalyze(url, title);
+    } finally {
+        setTimeout(() => {
+            setAnalysisInProgress(url, false);
+        }, 3000);
+    }
+}
+
+let progressSteps = [];
+
+function updateLoadingProgress(message, submessage) {
+    const loadingEl = document.getElementById('loading');
+    
+    // Add new step
+    progressSteps.push({ message, submessage });
+    
+    // Show all steps
+    let html = '<div style="padding: 15px; font-size: 13px; line-height: 1.6;">';
+    
+    progressSteps.forEach((s, i) => {
+        const isLatest = i === progressSteps.length - 1;
+        
+        // Main message
+        html += `<div style="opacity: ${isLatest ? '1' : '0.5'}; margin-bottom: 8px;">`;
+        html += `<strong>${s.message}</strong>`;
+        
+        // Submessage if exists
+        if (s.submessage) {
+            html += `<div style="margin-left: 15px; color: #666; font-size: 12px;">${s.submessage}</div>`;
+        }
+        
+        html += `</div>`;
+    });
+    
+    html += '</div>';
+    loadingEl.innerHTML = html;
+}
+
+async function fallbackAnalyze(url, title) {
+    // Fallback to original non-streaming API
+    try {
+        // Reset steps
+        progressSteps = [];
+        
+        document.getElementById('loading').innerHTML = `
+            <div style="padding: 20px; text-align: center;">
+                <p style="font-size: 18px; margin-bottom: 10px;">🔍 Analyzing article...</p>
+                <p style="font-size: 12px; color: #666;">This may take 10-15 seconds</p>
+            </div>
+        `;
+        
         const response = await fetch(`${API_URL}/analyze`, {
             method: 'POST',
             headers: {
@@ -54,17 +161,18 @@ async function analyzeArticle(url, title) {
         displayResults(data, title, url);
         
     } catch (error) {
-        console.error('Error analyzing article:', error);
+        console.error('Fallback error:', error);
         document.getElementById('loading').innerHTML = `
-            <p>⚠️ Error connecting to Aletheia API.</p>
-            <p>Make sure the backend is running on port 5000.</p>
+            <p style="padding: 20px;">⚠️ Error connecting to Aletheia API.</p>
+            <p style="padding: 0 20px;">Make sure the backend is running on port 5000.</p>
         `;
-    } finally {
-        setTimeout(() => {
-            setAnalysisInProgress(url, false);
-        }, 3000);
     }
 }
+
+// KEEP ALL YOUR EXISTING DISPLAY FUNCTIONS BELOW - DON'T CHANGE ANYTHING
+// displayResults, displayClaimClassification, displayCredibilityScore, 
+// displayFundingInfo, displayFlags, displayAdaptiveEvidence,
+// displayAnalysisWarning, displayMythDetection, displayMissingContext
 
 function displayResults(data, title, url) {
     document.getElementById('loading').style.display = 'none';
@@ -353,13 +461,7 @@ function displayAdaptiveEvidence(evidence, analysis) {
     let sectionEmoji = '🔍';
     if (label.includes('Independent')) {
         sectionEmoji = '🔬';
-    } else if (label.includes('Confirmation')) {
-        sectionEmoji = '✅';
-    } else if (label.includes('Debunk') || label.includes('Evidence-Based')) {
-        sectionEmoji = '🛡️';
     }
-    
-    document.querySelector('#evidence-section h2').innerHTML = `${sectionEmoji} ${label}`;
     
     let scoreClass = 'low';
     let scoreEmoji = '🔴';
@@ -372,55 +474,43 @@ function displayAdaptiveEvidence(evidence, analysis) {
     }
     
     let html = `
-        <div class="counter-article">
-            <div style="margin-bottom: 8px;">
-                <div class="credibility-badge credibility-${scoreClass}" style="font-size: 14px; padding: 4px 12px;">
-                    ${scoreEmoji} ${evidenceScore.toFixed(1)}/10
-                </div>
+        <div style="background: #f8f9fa; padding: 12px; border-radius: 4px; margin-bottom: 15px;">
+            <div style="font-weight: 600; margin-bottom: 8px;">${sectionEmoji} ${label}</div>
+            <div class="credibility-badge credibility-${scoreClass}" style="display: inline-block; margin-bottom: 8px;">
+                ${scoreEmoji} ${evidenceScore.toFixed(1)}/10
             </div>
-            <a href="${evidence.article.url}" target="_blank">
-                <strong>${evidence.article.title}</strong>
-            </a>
-            <p style="margin: 8px 0; font-size: 13px; color: #555;">
-                ${evidence.article.snippet}
-            </p>
-            <div class="info-item" style="margin-top: 8px;">
-                <span class="info-label">📰 Source:</span> 
-                <strong>${evidenceName}</strong>
+            <div style="font-size: 13px; margin-top: 8px;">
+                <strong>${evidenceName}</strong><br>
+                <a href="${evidence.article.url}" target="_blank" style="color: #3498db; text-decoration: none;">
+                    ${evidence.article.title}
+                </a>
             </div>
     `;
     
     if (evidencePub.funding_sources && evidencePub.funding_sources.length > 0) {
-        html += `
-            <div class="info-item">
-                <span class="info-label">💰 Funding:</span> 
-                ${evidencePub.funding_sources.join(', ')}
-            </div>
-        `;
+        html += `<div style="font-size: 12px; color: #666; margin-top: 8px;">
+            💰 Funding: ${evidencePub.funding_sources.slice(0, 2).join(', ')}
+        </div>`;
     }
     
+    // ADD THIS - Show funding diversity
     if (analysis && analysis.funding_diversity !== undefined) {
         const diversity = analysis.funding_diversity;
-        let diversityColor = diversity >= 70 ? '#27ae60' : diversity >= 40 ? '#f39c12' : '#e74c3c';
-        html += `
-            <div style="margin-top: 8px; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
-                <span class="info-label">🔄 Funding Diversity:</span> 
-                <span style="color: ${diversityColor}; font-weight: 600;">${diversity.toFixed(0)}%</span>
-                ${diversity >= 70 ? ' (Different funding sources)' : diversity >= 40 ? ' (Some overlap)' : ' (Similar funding)'}
-            </div>
-        `;
-    }
-    
-    if (analysis && analysis.credibility_difference) {
-        const diff = analysis.credibility_difference;
-        if (diff >= 1.5) {
-            html += `
-                <div class="warning" style="margin-top: 12px; font-size: 13px;">
-                    <strong>📊 Credibility Gap: ${diff.toFixed(1)} points</strong><br>
-                    ${analysis.recommendation || 'Compare both sources carefully'}
-                </div>
-            `;
+        let diversityColor = '#27ae60';
+        let diversityText = 'High diversity';
+        
+        if (diversity < 30) {
+            diversityColor = '#e74c3c';
+            diversityText = 'Low diversity - similar funding';
+        } else if (diversity < 60) {
+            diversityColor = '#f39c12';
+            diversityText = 'Moderate diversity';
         }
+        
+        html += `<div style="font-size: 12px; margin-top: 8px; padding: 8px; background: ${diversityColor}22; border-left: 3px solid ${diversityColor}; border-radius: 3px;">
+            <strong>🔀 Funding Diversity:</strong> ${diversity.toFixed(0)}%
+            <div style="color: #666; font-size: 11px; margin-top: 2px;">${diversityText}</div>
+        </div>`;
     }
     
     html += `</div>`;
@@ -431,36 +521,29 @@ function displayAdaptiveEvidence(evidence, analysis) {
 function displayAnalysisWarning(analysis) {
     const container = document.getElementById('analysis-warning');
     
-    if (!analysis) {
-        container.innerHTML = '';
+    if (!analysis || !analysis.warning) {
+        container.style.display = 'none';
         return;
     }
     
-    const warning = analysis.classification_warning || analysis.warning;
+    container.style.display = 'block';
     
-    if (!warning) {
-        container.innerHTML = '';
-        return;
-    }
-    
-    let warningClass = 'warning';
-    if (warning.includes('🚨') || warning.includes('CRITICAL')) {
-        warningClass = 'conflict';
-    } else if (warning.includes('✅') || warning.includes('confirmed')) {
-        warningClass = 'success-box';
+    let warningColor = '#f39c12';
+    if (analysis.warning.includes('CRITICAL')) {
+        warningColor = '#e74c3c';
     }
     
     container.innerHTML = `
-        <div class="${warningClass}">
-            ${warning}
-            ${analysis.recommendation ? `<br><br><strong>💡 Recommendation:</strong> ${analysis.recommendation}` : ''}
+        <div style="background: ${warningColor}22; border-left: 4px solid ${warningColor}; padding: 12px; border-radius: 4px;">
+            <div style="font-weight: 600; margin-bottom: 6px;">${analysis.warning}</div>
+            ${analysis.recommendation ? `<div style="font-size: 13px;">${analysis.recommendation}</div>` : ''}
         </div>
     `;
 }
 
 function displayMythDetection(myths) {
-    const section = document.getElementById('myth-section');
-    const container = document.getElementById('myth-detection');
+    const section = document.getElementById('myths-section');
+    const container = document.getElementById('detected-myths');
     
     if (!myths || myths.length === 0) {
         section.style.display = 'none';
@@ -472,9 +555,11 @@ function displayMythDetection(myths) {
     let html = '';
     myths.forEach(myth => {
         html += `
-            <div class="conflict" style="margin: 8px 0;">
-                <strong>${myth.myth}</strong><br>
-                <span style="font-size: 12px;">${myth.reality}</span>
+            <div class="conflict" style="margin-bottom: 10px;">
+                <strong>⚠️ ${myth.myth}</strong><br>
+                <div style="font-size: 13px; margin-top: 6px;">
+                    <strong>Reality:</strong> ${myth.reality}
+                </div>
             </div>
         `;
     });
@@ -486,13 +571,13 @@ function displayMissingContext(context) {
     const container = document.getElementById('missing-context');
     
     if (!context || context.length === 0) {
-        container.innerHTML = '<p style="color: #27ae60;">✅ No critical issues identified.</p>';
+        container.innerHTML = '<p style="font-size: 13px; color: #666;">No additional context needed.</p>';
         return;
     }
     
-    let html = '<ul>';
+    let html = '<ul style="margin: 0; padding-left: 20px; font-size: 13px;">';
     context.forEach(item => {
-        html += `<li>${item}</li>`;
+        html += `<li style="margin: 6px 0;">${item}</li>`;
     });
     html += '</ul>';
     

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import json
 import os
@@ -8,6 +8,8 @@ from services.publication_researcher import PublicationResearcher
 from services.claim_analyzer import ClaimAnalyzer
 from tavily import TavilyClient
 import re
+import queue
+import threading
 
 load_dotenv()
 
@@ -25,6 +27,17 @@ with open('data/myths.json', 'r') as f:
 researcher = PublicationResearcher()
 claim_analyzer = ClaimAnalyzer()
 tavily_client = TavilyClient(api_key=os.getenv('TAVILY_API_KEY'))
+
+# Progress tracking
+progress_queues = {}
+
+def send_progress(session_id, message, submessage=None):
+    """Send progress update to frontend"""
+    if session_id and session_id in progress_queues:
+        progress_data = {'message': message}
+        if submessage:
+            progress_data['submessage'] = submessage
+        progress_queues[session_id].put(json.dumps(progress_data))
 
 def should_reresearch(domain, publication):
     """
@@ -87,7 +100,7 @@ def extract_domain(url):
     except:
         return None
 
-def get_or_research_publication(domain):
+def get_or_research_publication(domain, session_id=None):
     """
     Get publication from cache or research it
     
@@ -109,17 +122,32 @@ def get_or_research_publication(domain):
     if cached_pub:
         if not is_publication_complete(cached_pub):
             print(f"🔄 Cached data incomplete for {domain}, re-researching...")
+            send_progress(session_id, f"🔍 Researching {domain}", "Cached data incomplete")
         elif should_reresearch(domain, cached_pub):
             # Will re-research (old format)
-            pass
+            send_progress(session_id, f"🔍 Researching {domain}", "Updating funding data")
         else:
             # Use cache (new format, trust the score)
             print(f"✅ Using cached data for {domain}")
+            send_progress(session_id, f"🔍 Analyzing {domain}", "Using cached data")
+            score = cached_pub.get('credibility_score', 0)
+            funding = cached_pub.get('funding_sources', [])
+            if funding:
+                send_progress(session_id, f"🔍 Analyzing {domain}", f"→ Credibility: {score}/10")
             return cached_pub
+    else:
+        send_progress(session_id, f"🔍 Researching {domain}", "First time analyzing this source")
     
     # Research needed
     print(f"🔍 Researching new source: {domain}...")
     new_pub = researcher.research(domain)
+    
+    # Send credibility result
+    score = new_pub.get('credibility_score', 0)
+    funding = new_pub.get('funding_sources', [])
+    if funding:
+        send_progress(session_id, f"🔍 Researching {domain}", "→ Found funding sources")
+    send_progress(session_id, f"🔍 Researching {domain}", f"→ Credibility: {score}/10")
     
     # Update cache
     updated = False
@@ -236,40 +264,43 @@ def calculate_promise_score(domain, result):
     return min(10, max(0, score))
 
 def extract_key_topics(title):
-    """Extract key health topics from title for focused evidence search"""
+    """
+    Extract key health topics from title for focused evidence search
     
-    # Remove common filler words
-    stop_words = [
-        'the', 'and', 'or', 'what', 'you', 'need', 'to', 'know', 
+    YOUR VISION: Extract what the article is ABOUT, not where it's FROM
+    User searches "red meat health", not "red meat anderson"
+    """
+    
+    # Remove site branding (everything after | or -)
+    title_clean = title.lower()
+    for separator in [' | ', ' - ', ' – ', ' — ', ' : ']:
+        if separator in title_clean:
+            title_clean = title_clean.split(separator)[0].strip()
+            break
+    
+    print(f"  📝 Title cleaned: '{title_clean}'")
+    
+    # Remove punctuation
+    title_clean = re.sub(r'[^\w\s]', ' ', title_clean)
+    
+    # Remove common filler words only (keep health terms)
+    stop_words = {
+        'the', 'and', 'or', 'what', 'you', 'need', 'to', 'know',
         'a', 'an', 'is', 'are', 'how', 'why', 'when', 'where',
         'for', 'with', 'about', 'from', 'your', 'that', 'this',
-        'can', 'may', 'should', 'will', 'does', 'has', 'have'
-    ]
+        'can', 'may', 'should', 'will', 'does', 'has', 'have', 'be'
+    }
     
-    # Clean and split
-    title_clean = re.sub(r'[•\[\]\(\)•]', ' ', title.lower())
-    title_clean = re.sub(r'[^\w\s-]', ' ', title_clean)
-    words = title_clean.split()
+    words = [w for w in title_clean.split() if w not in stop_words and len(w) > 2]
     
-    # Filter stop words and short words
-    key_words = [w for w in words if w not in stop_words and len(w) > 3]
+    # Take first 4-5 words for context
+    topic_phrase = ' '.join(words[:5])
     
-    # Remove duplicates while preserving order
-    seen = set()
-    unique_words = []
-    for w in key_words:
-        if w not in seen:
-            seen.add(w)
-            unique_words.append(w)
-    
-    # Take 3-4 most relevant words
-    topic_phrase = ' '.join(unique_words[:4])
-    
-    print(f"  🔎 Extracted topics: '{topic_phrase}'")
+    print(f"  🔎 Search topic: '{topic_phrase}'")
     
     return topic_phrase
 
-def find_adaptive_evidence(title, main_domain, main_pub, claim_classification, article_content=""):
+def find_adaptive_evidence(title, main_domain, main_pub, claim_classification, article_content="", session_id=None):
     """
     ADAPTIVE EVIDENCE SEARCH - Strategy depends on funding conflicts
     
@@ -282,6 +313,9 @@ def find_adaptive_evidence(title, main_domain, main_pub, claim_classification, a
     print(f"\n🎯 ADAPTIVE EVIDENCE SEARCH")
     print(f"  Classification: {classification}")
     print(f"  Strategy: {strategy}")
+    
+    send_progress(session_id, "🔎 Finding alternative sources")
+    send_progress(session_id, "🔎 Finding alternative sources", "→ Searching peer-reviewed research...")
     
     # Build search queries based on strategy
     if strategy == 'search_authoritative_confirmation':
@@ -313,11 +347,17 @@ def find_adaptive_evidence(title, main_domain, main_pub, claim_classification, a
         print(f"    - {q[:70]}...")
     
     # Execute search
-    evidence = execute_evidence_search(queries, main_domain, main_pub, strategy, classification)
+    evidence = execute_evidence_search(queries, main_domain, main_pub, strategy, classification, session_id)
     
     if evidence:
         evidence['label'] = label
         evidence['classification'] = classification
+        evidence_name = evidence['publication'].get('name', 'Unknown source')
+        evidence_score = evidence['publication'].get('credibility_score', 0)
+        send_progress(session_id, "🔎 Finding alternative sources", f"→ Found: {evidence_name}")
+        send_progress(session_id, "🔎 Finding alternative sources", f"→ Evidence credibility: {evidence_score}/10")
+    else:
+        send_progress(session_id, "🔎 Finding alternative sources", "→ No higher-quality sources found")
     
     return evidence
 
@@ -386,12 +426,11 @@ def build_default_queries(title):
         f"{topic_phrase} medical perspective"
     ]
 
-def execute_evidence_search(queries, main_domain, main_pub, strategy, classification):
+def execute_evidence_search(queries, main_domain, main_pub, strategy, classification, session_id=None):
     """
     Execute evidence search with funding-aware filtering
     
-    YOUR VISION: Evidence source should be MORE credible than main source
-    OR at least have DIFFERENT funding (to provide alternative perspective)
+    YOUR VISION SIMPLIFIED: If evidence source has equal or better credibility, use it.
     """
     
     try:
@@ -450,57 +489,61 @@ def execute_evidence_search(queries, main_domain, main_pub, strategy, classifica
         print(f"\n🎯 Best candidate: {best['domain']} (score: {best['promise_score']}/10)")
         
         # Deep research on best candidate
-        evidence_pub = get_or_research_publication(best['domain'])
+        evidence_pub = get_or_research_publication(best['domain'], session_id)
         
         if evidence_pub:
             evidence_score = evidence_pub.get('credibility_score', 0)
             main_score = main_pub.get('credibility_score', 0)
             
-            # YOUR VISION: Evidence should be MORE credible OR have different funding
+            print(f"  📊 Main source: {main_score}/10")
+            print(f"  📊 Evidence source: {evidence_score}/10")
             
-            is_basic_fact = classification in ['LIKELY_ESTABLISHED', 'ESTABLISHED_FACT_VERIFIED']
-            has_conflicts = classification in ['INDUSTRY_NARRATIVE', 'MANUFACTURED_CONSENSUS', 'CONTESTED_WITH_CONFLICTS']
-            
-            # Determine minimum threshold
-            if is_basic_fact:
-                # For basic facts, accept equal credibility
-                min_threshold = max(4.5, main_score - 0.5)
-                print(f"  ℹ️ Basic fact - threshold = {min_threshold}/10")
-            elif has_conflicts:
-                # For conflicts, we want BETTER source OR different funding
-                min_threshold = max(5.0, main_score)
-                print(f"  ℹ️ Conflicts detected - need >= {min_threshold}/10 OR different funding")
+            # YOUR VISION: Simple rule - equal or better = use it
+            if evidence_score >= main_score:
+                print(f"  ✅ Evidence source credibility equal or better ({evidence_score} >= {main_score}) - ACCEPTED")
                 
-                # Check funding diversity
-                main_funding = set([str(f).lower() for f in main_pub.get('funding_sources', [])])
-                evidence_funding = set([str(f).lower() for f in evidence_pub.get('funding_sources', [])])
-                
-                if main_funding and evidence_funding:
-                    overlap = len(main_funding & evidence_funding)
-                    total = len(main_funding | evidence_funding)
-                    overlap_pct = (overlap / total * 100) if total > 0 else 0
-                    
-                    if overlap_pct < 40:  # Less than 40% overlap = different funding
-                        print(f"  ✅ Different funding sources ({100-overlap_pct:.0f}% diversity) - acceptable despite lower score")
-                        min_threshold = max(4.0, main_score - 1.0)  # Allow lower score if funding is different
-                
+                return {
+                    'article': {
+                        'title': best['result'].get('title', 'Unknown'),
+                        'url': best['result'].get('url', ''),
+                        'snippet': best['result'].get('content', '')[:200]
+                    },
+                    'publication': evidence_pub
+                }
             else:
-                # For confirmation, want higher credibility
-                min_threshold = max(5.5, main_score + 0.5)
-                print(f"  ℹ️ Confirmation search - threshold = {min_threshold}/10")
-            
-            if evidence_score < min_threshold:
-                print(f"⚠️ Evidence source credibility too low ({evidence_score}/10), need >= {min_threshold}/10")
+                print(f"  ❌ Evidence source credibility lower ({evidence_score} < {main_score}) - REJECTED")
+                
+                # Try next candidates
+                print(f"  🔄 Trying next candidates...")
+                
+                for next_candidate in all_candidates[1:4]:  # Try up to 3 more
+                    if next_candidate['promise_score'] < 3.5:
+                        continue
+                    
+                    print(f"\n🎯 Trying: {next_candidate['domain']} (promise: {next_candidate['promise_score']}/10)")
+                    
+                    next_pub = get_or_research_publication(next_candidate['domain'], session_id)
+                    if next_pub:
+                        next_score = next_pub.get('credibility_score', 0)
+                        
+                        print(f"  📊 Candidate credibility: {next_score}/10")
+                        
+                        # Simple rule: equal or better
+                        if next_score >= main_score:
+                            print(f"  ✅ Accepted: {next_score} >= {main_score}")
+                            return {
+                                'article': {
+                                    'title': next_candidate['result'].get('title', 'Unknown'),
+                                    'url': next_candidate['result'].get('url', ''),
+                                    'snippet': next_candidate['result'].get('content', '')[:200]
+                                },
+                                'publication': next_pub
+                            }
+                        else:
+                            print(f"  ❌ Rejected: {next_score} < {main_score}")
+                
+                print(f"  ⚠️ No evidence sources with equal/better credibility found")
                 return None
-            
-            return {
-                'article': {
-                    'title': best['result'].get('title', 'Unknown'),
-                    'url': best['result'].get('url', ''),
-                    'snippet': best['result'].get('content', '')[:200]
-                },
-                'publication': evidence_pub
-            }
         
         return None
         
@@ -510,8 +553,112 @@ def execute_evidence_search(queries, main_domain, main_pub, strategy, classifica
         traceback.print_exc()
         return None
 
+@app.route('/analyze-stream', methods=['POST'])
+def analyze_stream():
+    """Stream analysis progress to frontend"""
+    data = request.json
+    url = data.get('url', '')
+    title = data.get('title', '')
+    session_id = data.get('session_id', 'default')
+    
+    # Create progress queue for this session
+    progress_queues[session_id] = queue.Queue()
+    
+    def generate():
+        try:
+            # Run analysis in background thread
+            result = {'data': None, 'error': None}
+            
+            def analyze_background():
+                try:
+                    result['data'] = analyze_with_progress(url, title, session_id)
+                except Exception as e:
+                    result['error'] = str(e)
+                    import traceback
+                    traceback.print_exc()
+            
+            thread = threading.Thread(target=analyze_background)
+            thread.start()
+            
+            # Stream progress updates
+            while thread.is_alive() or not progress_queues[session_id].empty():
+                try:
+                    progress = progress_queues[session_id].get(timeout=0.1)
+                    yield f"data: {progress}\n\n"
+                except queue.Empty:
+                    continue
+            
+            thread.join()
+            
+            # Send final result
+            if result['error']:
+                yield f"data: {json.dumps({'error': result['error']})}\n\n"
+            else:
+                yield f"data: {json.dumps({'complete': True, 'result': result['data']})}\n\n"
+            
+        finally:
+            # Cleanup
+            if session_id in progress_queues:
+                del progress_queues[session_id]
+    
+    return Response(generate(), mimetype='text/event-stream')
+
+def analyze_with_progress(url, title, session_id):
+    """Analyze article with progress updates"""
+    article_content = ""
+    domain = extract_domain(url)
+    
+    if not domain:
+        raise ValueError('Invalid URL')
+    
+    # 1. Analyze main publication
+    send_progress(session_id, f"🔍 Researching {domain}")
+    main_publication = get_or_research_publication(domain, session_id)
+    
+    # 2. Claim classification
+    send_progress(session_id, "💰 Analyzing claim conflicts")
+    claim_classification = claim_analyzer.analyze_claim(title, article_content, main_publication)
+    
+    classification_name = claim_classification['classification'].replace('_', ' ').title()
+    send_progress(session_id, "💰 Analyzing claim conflicts", f"→ Classification: {classification_name}")
+    
+    # Check for conflicts
+    if claim_classification.get('red_flags'):
+        conflict_count = len(claim_classification['red_flags'])
+        send_progress(session_id, "💰 Analyzing claim conflicts", f"→ {conflict_count} potential conflict(s) detected")
+    else:
+        send_progress(session_id, "💰 Analyzing claim conflicts", "→ No major conflicts detected")
+    
+    # 3. Detect myths
+    detected_myths = []
+    title_lower = title.lower()
+    for myth in MYTHS:
+        for keyword in myth['keywords']:
+            if keyword.lower() in title_lower:
+                detected_myths.append(myth)
+                break
+    
+    # 4. Evidence search
+    evidence = find_adaptive_evidence(
+        title, domain, main_publication, claim_classification, article_content, session_id
+    )
+    
+    # 5. Generate analysis
+    send_progress(session_id, "✅ Analysis ready!")
+    analysis = generate_analysis(main_publication, evidence, claim_classification)
+    
+    return {
+        'main_publication': main_publication,
+        'claim_classification': claim_classification,
+        'myths': detected_myths,
+        'evidence': evidence,
+        'analysis': analysis,
+        'missing_context': generate_missing_context(main_publication, evidence, claim_classification)
+    }
+
 @app.route('/analyze', methods=['POST'])
 def analyze():
+    """Original non-streaming endpoint for backwards compatibility"""
     data = request.json
     url = data.get('url', '')
     title = data.get('title', '')
@@ -553,9 +700,9 @@ def analyze():
     # 4. ADAPTIVE EVIDENCE SEARCH
     print("\n🔄 Step 4: Adaptive evidence search (seeking independent sources)...")
     evidence = find_adaptive_evidence(
-        title, 
-        domain, 
-        main_publication, 
+        title,
+        domain,
+        main_publication,
         claim_classification,
         article_content
     )
@@ -720,12 +867,28 @@ def generate_missing_context(main_pub, evidence, claim_classification):
         if 'independent' in ' '.join(evidence_funding) and 'independent' not in ' '.join(main_funding):
             context.append("Evidence source is independently funded")
     
-    # Fill with general advice if needed
-    if len(context) < 3:
-        context.extend([
-            "Consider checking original research",
-            "Look for independent verification"
-        ])
+    # NEW: Always provide something useful even if no red flags
+    if len(context) == 0:
+        classification = claim_classification.get('classification')
+        
+        if classification == 'ACTIVE_RESEARCH':
+            context.append("Active area of research - findings may evolve")
+            context.append("Consider checking for recent peer-reviewed studies")
+        elif classification == 'ESTABLISHED_FACT_VERIFIED':
+            context.append("Well-established scientific consensus")
+            context.append("Multiple independent sources confirm this information")
+        elif classification in ['MANUFACTURED_CONSENSUS', 'INDUSTRY_NARRATIVE']:
+            context.append("Industry influence detected - seek independent sources")
+            context.append("Follow the money - check who funded this research")
+        elif classification == 'CONTESTED_SCIENCE':
+            context.append("Scientific debate ongoing - examine evidence from both sides")
+            context.append("Look for funding sources behind competing claims")
+        elif classification == 'FRINGE':
+            context.append("Claims lack mainstream scientific support")
+            context.append("Verify with established medical sources")
+        else:
+            context.append("Consider checking original research")
+            context.append("Look for independent verification")
     
     # Remove duplicates
     seen = set()
