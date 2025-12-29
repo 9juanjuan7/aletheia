@@ -14,9 +14,15 @@
     "default_title": "Analyze this article with Aletheia"
   },
   "side_panel": {
-    "default_path": "sidebar/sidebar.html"
+    "default_path": "sidebar/sidebar-react.html"
   },
   "background": {
     "service_worker": "background.js"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["dist/*", "dist/assets/*", "dist/index.html"],
+      "matches": ["*://localhost/*", "*://127.0.0.1/*"]
+    }
+  ]
 }

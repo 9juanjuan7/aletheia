@@ -1454,5 +1454,304 @@
       "https://acsjournals.onlinelibrary.wiley.com/journal/15424863"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts with ACS"
+  },
+  {
+    "name": "Environmental Working Group",
+    "domain": "ewg.org",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Independent nonprofit",
+    "funding_sources": [
+      "Individual contributions",
+      "Private foundation grants",
+      "Event sponsorships"
+    ],
+    "conflicts_of_interest": [
+      "Ties to organic industry",
+      "Participation in affiliate programs"
+    ],
+    "industry_ties": [
+      "Organic food industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential bias due to funding sources",
+      "Criticism of scientific rigor"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "Environmental health",
+      "Consumer safety"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/Environmental_Working_Group",
+      "http://www.ewg.org/who-we-are/our-team/ken-cook",
+      "https://static.ewg.org/ggx88_ewg/annual_reports/EWG-990-2018.pdf"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Potential bias due to funding sources, Criticism of scientific rigor"
+  },
+  {
+    "name": "The Skin Cancer Foundation",
+    "domain": "skincancer.org",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "high",
+    "ownership": "The Skin Cancer Foundation, Inc.",
+    "funding_sources": [
+      "Corporate sponsorships",
+      "Event sponsorships"
+    ],
+    "conflicts_of_interest": [
+      "Corporate Council includes pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate sponsorship",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Educational resources"
+    ],
+    "expertise_areas": [
+      "skin cancer prevention",
+      "education"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.skincancer.org/about-us/who-we-are/",
+      "https://www.skincancer.org/blog/a-brothers-story/",
+      "https://www.privco.com/company/skin-cancer-foundation"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Educational resources | Concerns: Corporate sponsorship, Potential conflicts of interest"
+  },
+  {
+    "name": "American Medical Association",
+    "domain": "ama-assn.org",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "American Medical Association",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Received over $600,000 from pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "medical ethics"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.ama-assn.org/about/ama-history/ama-history",
+      "https://www.ama-assn.org/press-center/ama-press-releases/ama-draws-line-corporate-intrusion-physician-autonomy",
+      "https://www.ama-assn.org/system/files/2023-ama-annual-report.pdf"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "MASS Research Review",
+    "domain": "massresearchreview.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Stronger By Science LLC",
+    "funding_sources": [
+      "Subscription fees",
+      "Advertising"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to supplement industry"
+    ],
+    "industry_ties": [
+      "Supplement industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential industry influence",
+      "Subscription-based model"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.instagram.com/reel/C5YJ0XNOGWR/",
+      "https://www.reddit.com/r/loseit/comments/x4cdq4/were_greg_nuckols_and_eric_trexler_from_stronger/",
+      "https://massresearchreview.com/about-us-2/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Potential industry influence, Subscription-based model"
+  },
+  {
+    "name": "Stronger By Science",
+    "domain": "strongerbyscience.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Strongman Corporation",
+    "funding_sources": [
+      "Advertising",
+      "Sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by Strongman Corporation"
+    ],
+    "industry_ties": [
+      "Supplement industry"
+    ],
+    "author_credentials": "Greg Nuckols, MA in Exercise Physiology",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential industry bias",
+      "No peer review"
+    ],
+    "green_flags": [
+      "Links to studies",
+      "Discloses ownership"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.facebook.com/groups/startingstrongman/posts/3599168013641412/",
+      "https://tracxn.com/d/companies/stronger-by-science/__9vroO9IvOAcsNwkb3xxlaR827w8kQNXhrsx-PhqCXPI",
+      "https://www.linkedin.com/in/greg-nuckols-92545595"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Links to studies, Discloses ownership | Concerns: Potential industry bias, No peer review"
+  },
+  {
+    "name": "BBC Health Publication",
+    "domain": "bbc.com",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "BBC",
+    "funding_sources": [
+      "TV licence fee",
+      "Commercial revenues"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to government funding"
+    ],
+    "industry_ties": [
+      "None directly identified"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential government influence",
+      "No direct pharma funding found"
+    ],
+    "green_flags": [
+      "Discloses funding sources",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://canvasbusinessmodel.com/blogs/owners/bbc-who-owns?srsltid=AfmBOorXK82ISqz8BUQKELW15exiRywrthfLd_Km7mat-qiQ_bLTZf8m",
+      "https://www.quora.com/What-is-the-ownership-structure-of-the-BBC-British-Broadcasting-Corporation-Is-it-a-private-company-or-state-owned-What-is-its-political-leaning-if-any",
+      "https://www.companieshistory.com/bbc/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding sources, Links to studies | Concerns: Potential government influence, No direct pharma funding found"
+  },
+  {
+    "name": "De Montfort University Research Publications",
+    "domain": "dmu.ac.uk",
+    "credibility_score": 5.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "De Montfort University",
+    "funding_sources": [
+      "UK government grants",
+      "EU funding",
+      "charitable contributions"
+    ],
+    "conflicts_of_interest": [
+      "Potential industry partnerships"
+    ],
+    "industry_ties": [
+      "Pharmaceutical companies",
+      "Corporate sponsors"
+    ],
+    "author_credentials": "University staff, varying expertise",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic institutional guidelines",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Industry partnerships",
+      "Vague funding disclosures"
+    ],
+    "green_flags": [
+      "Some independent research funding",
+      "Guidelines for good research practice"
+    ],
+    "expertise_areas": [
+      "health",
+      "medicine",
+      "research ethics"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.dmu.ac.uk/documents/about-dmu-documents/university-governance/annual-reports/dmu-annual-accounts-2009-2010.pdf",
+      "https://www.dmu.ac.uk/documents/about-dmu-documents/professional-services/finance/dmu-annual-accounts-2021-22.pdf",
+      "https://www.dmu.ac.uk/documents/about-dmu-documents/university-governance/annual-reports/dmu-annual-accounts-2023-2024.pdf"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some independent research funding, Guidelines for good research practice | Concerns: Industry partnerships, Vague funding disclosures"
   }
 ]

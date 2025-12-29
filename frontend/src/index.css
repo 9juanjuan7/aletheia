@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aletheia Design System - Investigative Journalism Aesthetic */
+@layer base {
+  :root {
+    /* Core palette - Deep investigative tones */
+    --background: 210 20% 98%;
+    --foreground: 220 30% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 15%;
+
+    /* Primary - Deep investigative navy */
+    --primary: 220 40% 15%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary - Subtle slate */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 30% 15%;
+
+    /* Muted - Document paper tones */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 46%;
+
+    /* Accent - Investigative blue */
+    --accent: 220 14% 93%;
+    --accent-foreground: 220 30% 15%;
+
+    /* Semantic colors */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Alert colors - Investigative palette */
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 20%;
+    --warning-muted: 38 100% 97%;
+    
+    --success: 166 64% 32%;
+    --success-foreground: 166 64% 95%;
+    --success-muted: 166 60% 96%;
+    
+    --danger: 0 72% 51%;
+    --danger-foreground: 0 0% 100%;
+    --danger-muted: 0 100% 97%;
+
+    /* Credibility score colors */
+    --score-high: 166 64% 32%;
+    --score-medium: 38 92% 50%;
+    --score-low: 0 72% 51%;
+
+    /* Borders and inputs */
+    --border: 220 14% 90%;
+    --input: 220 14% 90%;
+    --ring: 220 40% 15%;
+
+    --radius: 3px;
+
+    /* Typography */
+    --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+
+    /* Shadows - Minimal investigative style */
+    --shadow-sm: 0 1px 2px rgba(26, 35, 50, 0.04);
+    --shadow-card: 0 1px 3px rgba(26, 35, 50, 0.06);
+    --shadow-elevated: 0 4px 12px rgba(26, 35, 50, 0.08);
+
+    /* Sidebar specific */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 30% 15%;
+    --sidebar-primary: 220 40% 15%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 30% 15%;
+    --sidebar-border: 220 14% 90%;
+    --sidebar-ring: 220 40% 15%;
+  }
+
+  .dark {
+    --background: 220 30% 8%;
+    --foreground: 210 20% 95%;
+
+    --card: 220 28% 11%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 220 28% 11%;
+    --popover-foreground: 210 20% 95%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 220 40% 15%;
+
+    --secondary: 220 25% 16%;
+    --secondary-foreground: 210 20% 95%;
+
+    --muted: 220 25% 16%;
+    --muted-foreground: 220 15% 60%;
+
+    --accent: 220 25% 18%;
+    --accent-foreground: 210 20% 95%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 10%;
+    --warning-muted: 38 50% 15%;
+    
+    --success: 166 64% 38%;
+    --success-foreground: 166 64% 10%;
+    --success-muted: 166 40% 15%;
+    
+    --danger: 0 72% 55%;
+    --danger-foreground: 0 0% 100%;
+    --danger-muted: 0 50% 15%;
+
+    --score-high: 166 64% 42%;
+    --score-medium: 38 92% 50%;
+    --score-low: 0 72% 55%;
+
+    --border: 220 25% 18%;
+    --input: 220 25% 18%;
+    --ring: 210 40% 98%;
+
+    --sidebar-background: 220 30% 8%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 220 30% 8%;
+    --sidebar-accent: 220 25% 16%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 25% 18%;
+    --sidebar-ring: 210 40% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer components {
+  /* Skeleton loading animation */
+  .skeleton {
+    @apply relative overflow-hidden bg-muted;
+  }
+  
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--foreground) / 0.04),
+      transparent
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+  }
+
+  @keyframes skeleton-shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Progress bar for scores */
+  .score-bar {
+    @apply relative h-2 w-full overflow-hidden bg-muted;
+    border-radius: 1px;
+  }
+
+  .score-bar-fill {
+    @apply absolute left-0 top-0 h-full transition-all duration-500 ease-out;
+  }
+
+  /* Section dividers */
+  .section-divider {
+    @apply border-t border-border;
+  }
+
+  /* Flag indicators */
+  .flag-indicator {
+    width: 0.25rem;
+    align-self: stretch;
+    flex-shrink: 0;
+    border-radius: 1px;
+  }
+
+  .flag-indicator-warning {
+    background-color: hsl(var(--warning));
+  }
+
+  .flag-indicator-success {
+    background-color: hsl(var(--success));
+  }
+
+  .flag-indicator-danger {
+    background-color: hsl(var(--danger));
+  }
+
+  /* Data labels */
+  .data-label {
+    @apply text-xs font-medium uppercase tracking-wider text-muted-foreground;
+    letter-spacing: 0.05em;
+  }
+
+  /* Monospace data display */
+  .data-value {
+    font-family: var(--font-mono);
+    @apply font-medium;
+  }
+
+  /* Alert boxes with left border */
+  .alert-box {
+    border-left-width: 2px;
+    padding-left: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .alert-box-warning {
+    border-left-color: hsl(var(--warning));
+    background-color: hsl(var(--warning-muted));
+  }
+
+  .alert-box-success {
+    border-left-color: hsl(var(--success));
+    background-color: hsl(var(--success-muted));
+  }
+
+  .alert-box-danger {
+    border-left-color: hsl(var(--danger));
+    background-color: hsl(var(--danger-muted));
+  }
+
+  /* Collapsible section header */
+  .collapsible-header {
+    @apply flex items-center justify-between py-3 cursor-pointer select-none;
+    @apply text-sm font-semibold text-foreground;
+  }
+
+  .collapsible-header:hover {
+    @apply text-primary;
+  }
+}
+
+@layer utilities {
+  /* Extension sidebar width constraint */
+  .sidebar-width {
+    width: 400px;
+    max-width: 100vw;
+  }
+}
