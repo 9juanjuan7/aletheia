@@ -26,6 +26,12 @@ class ClaimAnalyzer:
             'meat': ['protein', 'meat', 'animal', 'cholesterol', 'red meat'],
             'alcohol': ['alcohol', 'wine', 'beer', 'drinking', 'moderate consumption']
         }
+        
+        # Basic uncontroversial health facts
+        self.basic_health_facts = [
+            'vegetables', 'fruits', 'water', 'hydration', 'exercise', 'sleep',
+            'hygiene', 'handwashing', 'smoking harmful', 'physical activity'
+        ]
     
     def analyze_claim(self, title, article_content, main_pub):
         """
@@ -63,7 +69,7 @@ TITLE: {title}
 CONTENT PREVIEW: {article_content[:500] if article_content else 'Not available'}
 
 Classify as ONE of these:
-1. ESTABLISHED_FACT - Appears to be overwhelming scientific consensus (e.g., "smoking causes cancer", "water is necessary")
+1. ESTABLISHED_FACT - Appears to be overwhelming scientific consensus (e.g., "smoking causes cancer", "water is necessary", "vegetables are healthy")
 2. ACTIVE_RESEARCH - Legitimate ongoing scientific debate with quality evidence on multiple sides
 3. CONTESTED - Conflicting evidence, unclear which side is correct
 4. FRINGE - Lacks credible scientific evidence, likely pseudoscience
@@ -109,7 +115,7 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
     def funding_reality_check(self, title, main_pub, surface_class):
         """
         Critical check: Does the source have conflicts related to this claim?
-        This is where we catch industry narratives disguised as "facts"
+        ENHANCED: Avoid false positives for basic health facts
         """
         
         funding = main_pub.get('funding_sources', [])
@@ -120,6 +126,22 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
         
         red_flags = []
         
+        # Check if this is a basic health fact
+        title_lower = title.lower()
+        is_basic_fact = any(fact in title_lower for fact in self.basic_health_facts)
+        
+        # If basic fact AND no product promotion, be lenient
+        is_product_promotion = any(word in title_lower for word in [
+            'supplement', 'pill', 'cure', 'buy', 'order', 'product'
+        ])
+        
+        if is_basic_fact and not is_product_promotion:
+            print(f"  ℹ️ Detected basic health fact - reducing conflict sensitivity")
+            # Still check for conflicts, but require stronger evidence
+            conflict_threshold = 2  # Need 2+ red flags to trigger
+        else:
+            conflict_threshold = 1  # Normal threshold
+        
         # Check 1: Industry conflict detection
         industry_conflicts = self.detect_industry_conflicts(
             title, 
@@ -127,7 +149,8 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
             funding, 
             conflicts, 
             industry_ties, 
-            ownership
+            ownership,
+            is_basic_fact
         )
         
         if industry_conflicts:
@@ -135,11 +158,12 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
         
         # Check 2: Credibility vs claim strength mismatch
         if surface_class['classification'] == 'ESTABLISHED_FACT' and credibility < 6:
-            red_flags.append("Low credibility source making authoritative claim")
+            if not is_basic_fact:  # Don't flag for basic facts from moderate sources
+                red_flags.append("Low credibility source making authoritative claim")
         
         # Check 3: No primary sources for strong claim
         if surface_class['classification'] == 'ESTABLISHED_FACT':
-            if not main_pub.get('primary_source_links'):
+            if not main_pub.get('primary_source_links') and not is_basic_fact:
                 red_flags.append("No links to original research despite strong claim")
         
         # Check 4: Known propaganda patterns
@@ -158,10 +182,10 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
         if financial_incentive['score'] >= 7:
             red_flags.append(f"Strong financial incentive: {financial_incentive['reason']}")
         
-        # Determine status
-        if len(red_flags) >= 3:
+        # Determine status with adjusted threshold
+        if len(red_flags) >= conflict_threshold + 2:
             status = "MANUFACTURED_CONSENSUS_SUSPECTED"
-        elif len(red_flags) >= 1:
+        elif len(red_flags) >= conflict_threshold:
             status = "INDUSTRY_NARRATIVE_SUSPECTED"
         else:
             status = "CLEAN"
@@ -173,7 +197,7 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
             'financial_incentive': financial_incentive
         }
     
-    def detect_industry_conflicts(self, title, topics, funding, conflicts, industry_ties, ownership):
+    def detect_industry_conflicts(self, title, topics, funding, conflicts, industry_ties, ownership, is_basic_fact=False):
         """Check if source has financial ties to industries related to the claim"""
         
         conflicts_found = []
@@ -194,13 +218,23 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
             source_tied_to_industry = any(
                 industry.replace('_', ' ') in all_funding or
                 keyword in all_funding
-                for keyword in keywords[:3]  # Check first few keywords
+                for keyword in keywords[:3]
             )
             
             if claim_involves_industry and source_tied_to_industry:
-                conflicts_found.append(
-                    f"Claim involves {industry.replace('_', ' ')} products, source has {industry.replace('_', ' ')} funding/ties"
-                )
+                # For basic facts, only flag if promoting specific products
+                if is_basic_fact:
+                    promotes_product = any(word in title_lower for word in [
+                        'supplement', 'pill', 'product', 'brand', 'buy'
+                    ])
+                    if promotes_product:
+                        conflicts_found.append(
+                            f"Basic health fact used to promote {industry.replace('_', ' ')} products"
+                        )
+                else:
+                    conflicts_found.append(
+                        f"Claim involves {industry.replace('_', ' ')} products, source has {industry.replace('_', ' ')} funding/ties"
+                    )
         
         return conflicts_found
     
@@ -233,7 +267,6 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
         title_lower = title.lower()
         topics_str = ' '.join(topics).lower()
         
-        # High-value industries
         high_value_keywords = {
             'pharmaceutical': ['drug', 'medication', 'vaccine', 'treatment', 'prescription'],
             'supplement': ['supplement', 'vitamin', 'pill', 'cure'],
@@ -244,13 +277,11 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
         incentive_score = 0
         reasons = []
         
-        # Check if claim involves high-value products
         for industry, keywords in high_value_keywords.items():
             if any(kw in title_lower or kw in topics_str for kw in keywords):
                 incentive_score += 3
                 reasons.append(f"{industry.replace('_', ' ')} products mentioned")
         
-        # Check if source is funded by related industry
         funding_str = ' '.join([str(f) for f in funding + conflicts]).lower()
         if any(industry in funding_str for industry in high_value_keywords.keys()):
             incentive_score += 4
@@ -264,14 +295,12 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
     def determine_final_classification(self, surface_class, funding_check, main_pub):
         """
         Combine surface classification with funding check to get final classification
-        This is where we override "established facts" that are actually industry narratives
         """
         
         surface_type = surface_class['classification']
         funding_status = funding_check['status']
         credibility = main_pub.get('credibility_score', 5.0)
         
-        # Decision tree
         if surface_type == "ESTABLISHED_FACT":
             
             if funding_status == "MANUFACTURED_CONSENSUS_SUSPECTED":
@@ -308,7 +337,6 @@ Confidence scale 0-10 (10 = absolutely certain of classification)
                 }
             
             else:
-                # Medium credibility, no major conflicts
                 return {
                     'classification': 'LIKELY_ESTABLISHED',
                     'confidence': 6,

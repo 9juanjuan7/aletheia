@@ -361,13 +361,22 @@ def execute_evidence_search(queries, main_domain, main_pub, strategy):
         
         if evidence_pub:
             evidence_score = evidence_pub.get('credibility_score', 0)
+            main_score = main_pub.get('credibility_score', 0)
             
-            # For debunking/independent strategies, accept score >= 4
-            # For confirmation, want score >= 6
-            min_threshold = 4 if 'independent' in strategy or 'debunk' in strategy else 5
+            # ⬇️⬇️⬇️ REPLACE THIS SECTION ⬇️⬇️⬇️
+            # Old code (remove this):
+            # min_threshold = 4 if 'independent' in strategy or 'debunk' in strategy else 5
+            
+            # New code (use this instead):
+            # ENHANCED: Require evidence to be at least as credible as main source
+            if 'independent' in strategy or 'debunk' in strategy:
+                min_threshold = max(5.0, main_score)  # At least as good as main source
+            else:
+                min_threshold = max(6.0, main_score)  # Better than main source for confirmation
+            # ⬆️⬆️⬆️ END REPLACEMENT ⬆️⬆️⬆️
             
             if evidence_score < min_threshold:
-                print(f"⚠️ Evidence source credibility too low ({evidence_score}/10), discarding")
+                print(f"⚠️ Evidence source credibility too low ({evidence_score}/10), need >= {min_threshold}/10")
                 return None
             
             return {

@@ -203,7 +203,9 @@ class PublicationResearcher:
             'usda.gov': 'U.S. Department of Agriculture (USDA)',
             'who.int': 'World Health Organization (WHO)',
             'cancer.gov': 'National Cancer Institute',
-            'hhs.gov': 'Department of Health and Human Services'
+            'hhs.gov': 'Department of Health and Human Services',
+            'ncbi.nlm.nih.gov': 'National Center for Biotechnology Information (NCBI)',
+            'pmc.ncbi.nlm.nih.gov': 'PubMed Central (PMC)'
         }
         
         for key, value in agency_map.items():
@@ -213,28 +215,15 @@ class PublicationResearcher:
         return domain
     
     def parse_academic_domain(self, domain):
-        """Extract university name and department from academic domain"""
+        """Extract university name and department from academic domain - ENHANCED"""
         
         clean_domain = domain.replace('www.', '')
         parts = clean_domain.split('.')
         
-        department = None
-        university_part = None
-        
-        if len(parts) >= 3:
-            potential_dept = parts[0]
-            university_part = parts[1]
-            
-            dept_indicators = ['med', 'econ', 'bio', 'chem', 'psych', 'eng', 
-                             'business', 'law', 'health', 'nursing', 'pharmacy']
-            if any(indicator in potential_dept.lower() for indicator in dept_indicators):
-                department = potential_dept
-        else:
-            university_part = parts[0]
-        
+        # Enhanced university name detection
         university_name_map = {
-            'stanford': 'Stanford University',
             'harvard': 'Harvard University',
+            'stanford': 'Stanford University',
             'mit': 'Massachusetts Institute of Technology',
             'iastate': 'Iowa State University',
             'ucla': 'University of California Los Angeles',
@@ -242,16 +231,65 @@ class PublicationResearcher:
             'yale': 'Yale University',
             'princeton': 'Princeton University',
             'columbia': 'Columbia University',
-            'upenn': 'University of Pennsylvania'
+            'upenn': 'University of Pennsylvania',
+            'cornell': 'Cornell University',
+            'duke': 'Duke University',
+            'northwestern': 'Northwestern University',
+            'uchicago': 'University of Chicago',
+            'hopkins': 'Johns Hopkins University'
         }
         
-        university_name = university_name_map.get(
-            university_part.lower() if university_part else '', 
-            f"{university_part.title()} University" if university_part else domain
-        )
+        # Special department/school mappings
+        department_map = {
+            'hsph': 'School of Public Health',
+            'nutritionsource': 'Nutrition Source',
+            'med': 'Medical School',
+            'law': 'Law School',
+            'business': 'Business School',
+            'econ': 'Economics Department',
+            'engineering': 'Engineering School',
+            'nursing': 'Nursing School',
+            'pharmacy': 'Pharmacy School'
+        }
+        
+        # Check entire domain for university name first
+        domain_lower = clean_domain.lower()
+        detected_university = None
+        
+        for key, name in university_name_map.items():
+            if key in domain_lower:
+                detected_university = name
+                break
+        
+        # Extract department/school
+        department = None
+        if len(parts) >= 3:
+            subdomain = parts[0].lower()
+            
+            # Check if subdomain matches known department
+            for dept_key, dept_name in department_map.items():
+                if dept_key in subdomain:
+                    department = dept_name
+                    break
+            
+            # If not found in map, use subdomain as-is
+            if not department and subdomain not in ['www', '']:
+                department = subdomain.replace('-', ' ').replace('_', ' ').title()
+        
+        # Combine for special cases
+        if detected_university == 'Harvard University' and 'hsph' in domain_lower:
+            detected_university = 'Harvard School of Public Health'
+        
+        # Fallback to parsing from parts
+        if not detected_university:
+            university_part = parts[1] if len(parts) >= 2 else parts[0]
+            detected_university = university_name_map.get(
+                university_part.lower(),
+                f"{university_part.title()} University"
+            )
         
         return {
-            'university_name': university_name,
+            'university_name': detected_university,
             'department': department,
             'domain_parts': parts
         }
@@ -309,112 +347,95 @@ Department: {university_info['department'] or 'Not specified'}
 CRITICAL: Academic ≠ Independent! Many universities receive massive corporate funding.
 
 For academic sources, extract:
-1. SPECIFIC CORPORATE DONORS if mentioned (e.g., "Pfizer funds cancer research", "Coca-Cola nutrition lab")
+1. SPECIFIC CORPORATE DONORS if mentioned
 2. Industry partnerships and collaborations
 3. Research grant sources (corporate vs government vs truly independent)
 4. Endowment contributors if disclosed
-5. Department-specific funding (which companies fund THIS department?)
+5. Department-specific funding
 
-Academic Funding Transparency Levels:
+Academic Funding Transparency:
 - "high": Specific corporate donors named with amounts
 - "medium": General mentions of corporate support
-- "low": Vague "private donors" or "corporate partnerships" without names
+- "low": Vague "private donors" without names
 - "none": No funding information found
 
 Academic Credibility Scoring:
 START at 6.0 for .edu domains, then:
 
-GOVERNMENT FUNDING (BE SKEPTICAL):
-+1.0: Independent research grants (NSF basic science, non-health topics)
-+0.5: NIH/CDC grants for basic research (can be influenced, but some independence)
-+0.0: USDA nutrition research (heavily industry-captured)
--0.5: Industry-government partnerships
--1.0: Government agency writing guidelines that benefit industry
+BASIC HEALTH FACTS EXCEPTION:
+If article discusses basic uncontroversial health facts (vegetables good, water necessary, exercise healthy):
++0.5: Even funded sources can state basic facts
+Do NOT flag as industry narrative unless promoting specific products/brands
 
-Note: Government funding ≠ independence. Check WHAT agency and WHAT topic.
-- NIH cancer biology grant = somewhat independent (+0.5)
-- USDA promoting dairy/meat = industry capture (0.0)
-- FDA with pharma ties = captured (-0.5)
+GOVERNMENT FUNDING (BE SKEPTICAL):
++1.0: Independent research grants (NSF basic science)
++0.5: NIH/CDC grants for basic research
++0.0: USDA nutrition research (industry-captured)
+-0.5: Industry-government partnerships
+-1.0: Guidelines that benefit industry
 
 CORPORATE FUNDING:
-- Corporate donors disclosed: -1.0 (influence) +0.5 (transparency) = -0.5 net
-- "Corporate partners" unnamed: -2.0 (no transparency + influence)
-- No funding info found: -1.5 (lack of transparency is suspicious)
+- Corporate donors disclosed: -0.5 net (transparency +0.5, influence -1.0)
+- "Corporate partners" unnamed: -2.0
+- No funding info: -1.5
 
-TRUE INDEPENDENCE (rare):
-+2.0: Independent nonprofit, no government/corporate ties, transparent funding
-+1.5: Subscription-only, no ads or sponsors
-+1.0: Crowdfunded with transparent disclosure
+TRUE INDEPENDENCE:
++2.0: Independent nonprofit, no government/corporate ties
++1.5: Subscription-only, no ads
++1.0: Crowdfunded, transparent
 
-OTHER FACTORS:
-- Department outside expertise (e.g., economics on medicine): -1.0
-- Peer-reviewed journal: +1.0
-- Full conflict disclosure: +1.0
-- No conflict disclosure: -1.0
-
-Funding Sources Examples:
-- Good: ["Independent nonprofit - disclosed donors", "No corporate or government ties"]
-- Moderate: ["NIH cancer research grant", "State university funding (no corporate ties found)"]
-- Concerning: ["State funding", "Corporate donors (names not disclosed)", "USDA nutrition research"]
-- Bad: ["Pharmaceutical company sponsorship", "Undisclosed funding"]
+OTHER:
+- Outside expertise: -1.0
+- Peer-reviewed: +1.0
+- Full disclosure: +1.0
 """
         
         if is_government:
             agency_name = self.parse_government_domain(domain)
+            
+            # Special handling for PubMed Central / NCBI
+            is_pubmed = 'pmc.ncbi' in domain or 'pubmed' in domain.lower()
+            
             government_instruction = f"""
 
 SPECIAL INSTRUCTION FOR GOVERNMENT SOURCES:
 This is a government agency: {agency_name}
 
-CRITICAL: Government agencies CAN be captured by industry. Examples:
-- USDA nutrition guidelines written by meat/dairy lobbyists
-- FDA officials join pharma companies (revolving door)
-- CDC with pharmaceutical industry ties
-- Regulatory capture is REAL and common
+{'SPECIAL NOTE: This is PubMed Central (PMC) - an archive of peer-reviewed academic papers, NOT government agency content. Treat as academic paper repository.' if is_pubmed else ''}
+
+CRITICAL: Government agencies CAN be captured by industry.
 
 Government Credibility Scoring:
-START at 6.0 for .gov domains (slight trust), then:
-
-CHECK FOR INDUSTRY CAPTURE:
--2.0: USDA nutrition/dietary guidelines (food industry writes them)
--1.5: FDA drug approvals during controversy (pharma revolving door)
--1.0: Agency officials with industry ties or revolving door employment
--1.0: Government-industry "partnerships" (usually industry-led)
--0.5: Advisory boards with corporate members
-+0.5: Basic research publications (non-policy)
-+1.0: Agency with strong independence record and no industry ties
+START at 6.0 for .gov domains, then:
 
 SPECIFIC AGENCIES:
-- USDA on nutrition: Start at 4.0 (heavily captured by food industry)
-- FDA on pharma: Start at 5.0 (revolving door concerns)
-- NIH basic research: Start at 7.0 (more independent)
-- CDC on vaccines during controversy: Start at 5.0 (pharma ties)
+- PubMed Central / NCBI (academic paper archive): Start at 7.5 (hosts peer-reviewed papers)
+- USDA nutrition/dietary: Start at 4.0 (food industry capture)
+- FDA drug approvals: Start at 5.0 (pharma revolving door)
+- NIH basic research (not policy): Start at 7.0 (more independent)
+- CDC vaccines during controversy: Start at 5.5 (pharma ties)
 - Cancer.gov basic info: Start at 7.0 (generally reliable)
 
-Red Flags for Government:
-- "Agency officials have industry ties/revolving door"
-- "USDA dietary guidelines (food industry influence documented)"
-- "Government-industry partnership (likely industry-led)"
-- "Advisory board includes corporate representatives"
-- "Policy/guideline that financially benefits specific industry"
-- "Agency historically criticized for industry capture"
+CHECK FOR CAPTURE:
+-2.0: USDA nutrition guidelines
+-1.5: FDA drug approvals during controversy
+-1.0: Agency officials with industry ties
+-1.0: Government-industry "partnerships"
+-0.5: Advisory boards with corporate members
++0.5: Basic research publications
++1.0: Strong independence record
 
-Green Flags for Government:
-- "Basic research publication, not policy/guidelines"
+Red Flags:
+- "Agency officials have industry ties/revolving door"
+- "USDA dietary guidelines (food industry influence)"
+- "Government-industry partnership"
+- "Advisory board includes corporate reps"
+
+Green Flags:
+- "Basic research, not policy/guidelines"
 - "No documented industry conflicts"
 - "Strong independence record"
-- "Transparent conflict disclosure"
-
-Funding Sources for Government:
-Instead of just "Federal government", be specific:
-- ["Federal appropriations", "Some industry advisory board members (pharma)"]
-- ["Government funding", "USDA (documented food industry lobbying influence)"]
-- ["NIH research budget", "No direct industry funding found"]
-
-Ownership Examples:
-- "U.S. Department of Agriculture (documented food industry lobbying)"
-- "Food and Drug Administration (pharma revolving door concerns)"
-- "National Institutes of Health (generally independent for basic research)"
+- "PubMed Central academic paper archive"
 """
 
         prompt = f"""
@@ -456,82 +477,53 @@ Return ONLY valid JSON with this exact structure:
 
 CREDIBILITY SCORING SYSTEM (0-10) - FUNDING MATTERS MORE THAN CREDENTIALS OR AUTHORITY:
 
-FUNDING INDEPENDENCE HIERARCHY (Most to Least Trustworthy):
-
-TIER 1 - HIGHLY INDEPENDENT (Score boost: +2.0):
-- Independent nonprofit, transparent funding, no corporate/government ties
-- Crowdfunded research with public donor disclosure
-- Subscription-only publication, no ads, no sponsors
-Examples: Truly independent research institutes
-
-TIER 2 - MODERATELY INDEPENDENT (Score boost: +0.5 to +1.0):
-- Basic science research grants (NSF, non-health topics)
-- Academic research with full funding disclosure and no industry ties
-- NIH basic research grants (not policy-related)
-- Government basic research (not guidelines/policy)
-
-TIER 3 - POTENTIALLY COMPROMISED (Score: Neutral 0.0 to -0.5):
-- Government health agencies (NIH, CDC, FDA) - can have industry influence
-- USDA (heavily industry-captured for nutrition/food)
-- Academic institutions with undisclosed funding
-- Mixed funding (government + some corporate)
-- Government-industry "partnerships"
-
-TIER 4 - INDUSTRY INFLUENCED (Score penalty: -1.0 to -2.0):
-- Corporate donors named but presented as "independent"
-- Government agency with documented industry ties
-- USDA nutrition guidelines (food industry writes them)
-- FDA during pharma controversies (revolving door)
-- "Public-private partnerships" (usually industry-led)
-- Vague "corporate sponsors" without names
-
-TIER 5 - DIRECTLY COMPROMISED (Score penalty: -3.0 to -4.0):
-- Owned by industry they cover
-- Pharma/food/supplement company funding
-- Undisclosed conflicts
-- Hidden industry funding
-- Revolving door documented
-
 START SCORES:
 - General sources: 5.0
 - Academic (.edu): 6.0
-- Government (.gov): 6.0 (but adjust heavily based on agency and capture evidence)
+- Government (.gov): 6.0 (adjust heavily based on agency)
+- PubMed Central / academic paper archives: 7.5
 - Independent nonprofit: 7.0
 - Commercial: 4.0
 
-PRIMARY SOURCE VERIFICATION (Most Critical):
-+2.0: Consistently links to peer-reviewed studies with DOIs
+PRIMARY SOURCE VERIFICATION:
++2.0: Consistently links to peer-reviewed studies
 +1.0: Sometimes links to sources
--2.0: Rarely or never links to original research
--3.0: Makes claims without any citations
+-2.0: Rarely links
+-3.0: No citations
+
+FUNDING INDEPENDENCE:
++2.0: Independent nonprofit, no corporate/gov ties, transparent
++1.5: Subscription-only, no ads
++1.0: Crowdfunded, transparent
++0.5-1.0: Government basic research (not policy)
+0.0 to -0.5: Government agencies with potential capture
+-1.0 to -2.0: Corporate donors or captured government
+-3.0 to -4.0: Owned by industry or hidden conflicts
 
 TRACK RECORD:
-+1.0: Zero retractions, strong fact-check history
--2.0: History of retractions or corrections
++1.0: Zero retractions
+-2.0: History of retractions
 -3.0: Multiple fact-checker warnings
 
 TRANSPARENCY:
-+1.0: Full disclosure of funding, conflicts, methodology
++1.0: Full disclosure
 -1.0: Vague or missing disclosures
 
-CREDENTIALS (Minor Weight):
-+1.0: Peer-reviewed medical journal
+CREDENTIALS:
++1.0: Peer-reviewed journal
 +0.5: Medical credentials AND independent funding
-+0.0: Medical credentials BUT corporate/captured-government funded
--0.5: No medical expertise for medical topics
+0.0: Medical credentials BUT corporate-funded
+-0.5: No expertise for medical topics
 
 CRITICAL RULES:
 1. Government authority ≠ trustworthy (agencies can be captured)
-2. USDA nutrition = food industry capture (start low)
-3. FDA pharma = revolving door concerns (be skeptical)
-4. Academic = often corporate-funded (check thoroughly)
-5. A PhD funded by Pfizer = LOW credibility
-6. Independent journalist linking to studies = HIGH credibility
-7. Funding sources are THE #1 credibility factor
-8. Extract ONLY verifiable facts from sources
-9. Be EXPLICIT about lack of transparency
-10. BE SKEPTICAL of authority - follow the money
-11. Return ONLY the JSON object
+2. PubMed Central = academic paper archive (score 7.5+)
+3. USDA nutrition = food industry capture (start 4.0)
+4. FDA pharma = revolving door (start 5.0)
+5. Academic = often corporate-funded
+6. Follow the money, not credentials
+7. Basic health facts (vegetables good) can be stated by funded sources - don't over-flag
+8. Return ONLY the JSON object
 """
         
         try:
@@ -540,11 +532,15 @@ CRITICAL RULES:
                 messages=[
                     {
                         "role": "system",
-                        "content": """You are a critical analyst of medical publications who is HIGHLY SKEPTICAL of both corporate AND government authority. Your job is to expose funding conflicts and industry bias wherever it exists - including in government agencies. 
+                        "content": """You are a critical analyst highly skeptical of both corporate AND government authority. Expose funding conflicts and industry bias wherever it exists - including government agencies.
 
-Credentials (MD/PhD) mean NOTHING if funded by corporations. Government authority means NOTHING if the agency is captured by industry. The USDA is captured by food industry. The FDA has revolving door with pharma. Academic institutions take corporate money.
+Credentials mean NOTHING if funded by corporations. Government authority means NOTHING if captured by industry. USDA is captured by food industry. FDA has pharma revolving door.
 
-Prioritize funding transparency and source citations over impressive titles or government seals. Be skeptical of ALL authority - follow the money. For academic sources, dig deep into corporate funding. For government sources, check for industry capture, revolving doors, and lobbying influence."""
+PubMed Central (pmc.ncbi.nlm.nih.gov) is an academic paper ARCHIVE, not government agency content - score it highly (7.5+).
+
+For basic uncontroversial health facts (vegetables are healthy, water is necessary), don't over-flag as industry narrative unless promoting specific products.
+
+Prioritize funding transparency over credentials. Be skeptical of ALL authority - follow the money."""
                     },
                     {"role": "user", "content": prompt}
                 ],

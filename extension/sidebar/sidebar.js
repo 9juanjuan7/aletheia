@@ -1,5 +1,65 @@
 const API_URL = 'http://localhost:5000';
 
+// Analysis lock to prevent duplicate requests
+let analysisInProgress = false;
+let currentAnalysisUrl = null;
+
+// Listen for messages from background script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'analyze') {
+        // Prevent duplicate analysis
+        if (analysisInProgress && currentAnalysisUrl === message.url) {
+            console.log('Analysis already in progress for this URL');
+            return;
+        }
+        
+        analyzeArticle(message.url, message.title);
+    }
+});
+
+async function analyzeArticle(url, title) {
+    // Set lock
+    if (analysisInProgress && currentAnalysisUrl === url) {
+        console.log('Analysis already in progress, ignoring duplicate request');
+        return;
+    }
+    
+    analysisInProgress = true;
+    currentAnalysisUrl = url;
+    
+    // Show loading state
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    
+    try {
+        // Call backend API
+        const response = await fetch(`${API_URL}/analyze`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url, title })
+        });
+        
+        const data = await response.json();
+        
+        // Display results
+        displayResults(data, title, url);
+        
+    } catch (error) {
+        console.error('Error analyzing article:', error);
+        document.getElementById('loading').innerHTML = `
+            <p>⚠️ Error connecting to Aletheia API.</p>
+            <p>Make sure the backend is running on port 5000.</p>
+        `;
+    } finally {
+        // Release lock after 2 seconds
+        setTimeout(() => {
+            analysisInProgress = false;
+            currentAnalysisUrl = null;
+        }, 2000);
+    }
+}
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'analyze') {

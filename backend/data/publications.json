@@ -210,5 +210,256 @@
       "https://www.fool.com/investing/how-to-invest/stocks/who-owns-youtube/"
     ],
     "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "Food Facility Registration User Guide",
+    "domain": "fda.gov",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "U.S. Department of Health and Human Services",
+    "funding_sources": [
+      "Federal appropriations",
+      "Pharmaceutical industry influence"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical companies through advisory committees"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Food industry"
+    ],
+    "author_credentials": "FDA staff, some with medical backgrounds",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic compliance with regulatory guidelines",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma revolving door concerns",
+      "Lack of independent oversight"
+    ],
+    "green_flags": [
+      "Official government publication",
+      "Basic regulatory information"
+    ],
+    "expertise_areas": [
+      "regulatory compliance",
+      "food safety"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.fda.gov/media/161181/download",
+      "https://www.fda.gov/media/141551/download",
+      "https://www.fda.gov/about-fda/forms/registration-and-listing-owners-and-operators-domestic-deemed-tobacco-product-establishments-pdf"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Official government publication, Basic regulatory information | Concerns: Pharma revolving door concerns, Lack of independent oversight"
+  },
+  {
+    "name": "The Nutrition Source",
+    "domain": "nutritionsource.hsph.harvard.edu",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Harvard University",
+    "funding_sources": [
+      "No Commercial Advertising or Sponsorship"
+    ],
+    "conflicts_of_interest": [],
+    "industry_ties": [
+      "Food industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential industry influence",
+      "No specific funding disclosures"
+    ],
+    "green_flags": [
+      "Discloses no commercial sponsorship",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://nutritionsource.hsph.harvard.edu/about/",
+      "https://nutritionsource.hsph.harvard.edu/",
+      "https://content.sph.harvard.edu/wwwhsph/sites/65/2014/10/NutriNews-October.pdf"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses no commercial sponsorship, Links to studies | Concerns: Potential industry influence, No specific funding disclosures"
+  },
+  {
+    "name": "Risky business? Pharmaceutical industry sponsorship of health ...",
+    "domain": "pmc.ncbi.nlm.nih.gov",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "medium",
+    "ownership": "National Institutes of Health (NIH)",
+    "funding_sources": [
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential industry ties in research"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Various authors, some with medical backgrounds",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Links to studies",
+      "Discloses some funding"
+    ],
+    "expertise_areas": [
+      "health",
+      "pharmaceuticals"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC8569392/",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC6727646/",
+      "https://pmc.ncbi.nlm.nih.gov/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Links to studies, Discloses some funding | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "Breastcancer.org",
+    "domain": "breastcancer.org",
+    "credibility_score": 3.0,
+    "primary_source_links": false,
+    "funding_transparency": "high",
+    "ownership": "Not disclosed",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.breastcancer.org/about-us/team-board-of-directors",
+      "https://www.crunchbase.com/organization/breastcancer-org",
+      "https://www.linkedin.com/in/hope-wohl-994b995"
+    ],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "Breast Cancer Prevention Partners",
+    "domain": "bcpp.org",
+    "credibility_score": 3.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Breast Cancer Prevention Partners",
+    "funding_sources": [
+      "Donations",
+      "Campaigns"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to cosmetic and personal care industries"
+    ],
+    "industry_ties": [
+      "Cosmetic industry",
+      "Environmental advocacy funding"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential industry influence",
+      "Vague funding sources"
+    ],
+    "green_flags": [
+      "Discloses some funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "environmental exposures"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.bcpp.org/wp-content/uploads/2018/10/BCPP-FY-17-Form-990.pdf",
+      "https://www.bcpp.org/michael-drescher-founder-vibrant-body-company/",
+      "https://www.bcpp.org/about-us/"
+    ],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses some funding, Links to studies | Concerns: Potential industry influence, Vague funding sources"
+  },
+  {
+    "name": "Profits and Health Care: An Introduction to the Issues",
+    "domain": "ncbi.nlm.nih.gov",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "National Institutes of Health",
+    "funding_sources": [
+      "Federal appropriations",
+      "Some industry advisory board members (pharma)"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical interests"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Health service corporations"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential industry influence",
+      "No detailed funding disclosure"
+    ],
+    "green_flags": [
+      "Links to studies",
+      "Basic research focus"
+    ],
+    "expertise_areas": [
+      "health",
+      "healthcare economics"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.ncbi.nlm.nih.gov/books/NBK217897/",
+      "https://www.ncbi.nlm.nih.gov/books/NBK217919/",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC8569392/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Links to studies, Basic research focus | Concerns: Potential industry influence, No detailed funding disclosure"
   }
 ]
