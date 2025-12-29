@@ -1,12 +1,11 @@
 const API_URL = 'http://localhost:5000';
 
-// Use session storage to track analysis state (more reliable than variables)
+// Session storage for duplicate prevention
 function isAnalysisInProgress(url) {
     const inProgress = sessionStorage.getItem('aletheia_analyzing');
     const analyzingUrl = sessionStorage.getItem('aletheia_url');
     const timestamp = parseInt(sessionStorage.getItem('aletheia_timestamp') || '0');
     
-    // Check if analysis is in progress for this URL within last 10 seconds
     const now = Date.now();
     if (inProgress === 'true' && analyzingUrl === url && (now - timestamp) < 10000) {
         return true;
@@ -20,10 +19,8 @@ function setAnalysisInProgress(url, inProgress) {
     sessionStorage.setItem('aletheia_timestamp', Date.now().toString());
 }
 
-// Listen for messages from background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'analyze') {
-        // Prevent duplicate analysis
         if (isAnalysisInProgress(message.url)) {
             console.log('⚠️ Analysis already in progress for this URL, ignoring duplicate request');
             return;
@@ -34,21 +31,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function analyzeArticle(url, title) {
-    // Double-check before starting
     if (isAnalysisInProgress(url)) {
         console.log('⚠️ Duplicate request blocked');
         return;
     }
     
-    // Set lock
     setAnalysisInProgress(url, true);
     
-    // Show loading state
     document.getElementById('loading').style.display = 'block';
     document.getElementById('results').style.display = 'none';
     
     try {
-        // Call backend API
         const response = await fetch(`${API_URL}/analyze`, {
             method: 'POST',
             headers: {
@@ -58,8 +51,6 @@ async function analyzeArticle(url, title) {
         });
         
         const data = await response.json();
-        
-        // Display results
         displayResults(data, title, url);
         
     } catch (error) {
@@ -69,7 +60,6 @@ async function analyzeArticle(url, title) {
             <p>Make sure the backend is running on port 5000.</p>
         `;
     } finally {
-        // Release lock after 3 seconds
         setTimeout(() => {
             setAnalysisInProgress(url, false);
         }, 3000);
@@ -80,29 +70,17 @@ function displayResults(data, title, url) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('results').style.display = 'block';
     
-    // Article info
     document.getElementById('article-title').textContent = title;
     const domain = new URL(url).hostname;
     document.getElementById('article-source').textContent = domain;
     
-    // Display claim classification first
     displayClaimClassification(data.claim_classification);
-    
-    // Main source credibility
     displayCredibilityScore(data.main_publication);
     displayFundingInfo(data.main_publication);
     displayFlags(data.main_publication);
-    
-    // Adaptive evidence
     displayAdaptiveEvidence(data.evidence, data.analysis);
-    
-    // Analysis warning
     displayAnalysisWarning(data.analysis);
-    
-    // Myth detection
     displayMythDetection(data.myths);
-    
-    // Missing context
     displayMissingContext(data.missing_context);
 }
 
@@ -435,7 +413,7 @@ function displayAdaptiveEvidence(evidence, analysis) {
     
     if (analysis && analysis.credibility_difference) {
         const diff = analysis.credibility_difference;
-        if (diff >= 2) {
+        if (diff >= 1.5) {
             html += `
                 <div class="warning" style="margin-top: 12px; font-size: 13px;">
                     <strong>📊 Credibility Gap: ${diff.toFixed(1)} points</strong><br>
