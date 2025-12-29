@@ -83,6 +83,16 @@ const Index = () => {
     }
   };
 
+  const handleScanCurrentPage = () => {
+    // Request current page info from the extension
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+      if (tab && tab.url && tab.title) {
+        analyzeArticle(tab.url, tab.title);
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-muted flex items-start justify-center py-8">
       <div className="shadow-elevated">
@@ -103,6 +113,7 @@ const Index = () => {
             articleUrl={articleUrl}
             data={data}
             onRefresh={handleRefresh}
+            onScan={handleScanCurrentPage}
           />
         )}
       </div>

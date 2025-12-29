@@ -1753,5 +1753,175 @@
       "https://www.dmu.ac.uk/documents/about-dmu-documents/university-governance/annual-reports/dmu-annual-accounts-2023-2024.pdf"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some independent research funding, Guidelines for good research practice | Concerns: Industry partnerships, Vague funding disclosures"
+  },
+  {
+    "name": "Frontiers in Health and Nutrition",
+    "domain": "frontiersin.org",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Frontiers Media SA",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical interests"
+    ],
+    "industry_ties": [
+      "Food industry",
+      "Supplement industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2023.1126853/full",
+      "https://www.frontiersin.org/about/history",
+      "https://www.frontiersin.org/legal/terms-and-conditions"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "Publication name",
+    "domain": "canr.msu.edu",
+    "credibility_score": 5.0,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Michigan State University",
+    "funding_sources": [
+      "State funding",
+      "Private donations"
+    ],
+    "conflicts_of_interest": [
+      "Potential conflicts in public-private partnerships"
+    ],
+    "industry_ties": [
+      "Agricultural industry",
+      "Consulting services"
+    ],
+    "author_credentials": "Staff writers, some with academic backgrounds",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Lack of specific funding disclosure",
+      "Potential industry influence"
+    ],
+    "green_flags": [
+      "Acknowledges land history",
+      "Focus on community engagement"
+    ],
+    "expertise_areas": [
+      "agriculture",
+      "natural resources",
+      "community outreach"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.canr.msu.edu/news/canr_recognizes_alumni_and_friends_for_excellence",
+      "https://www.canr.msu.edu/news/nonprofit_organizations_and_common_misunderstandings",
+      "https://www.canr.msu.edu/news/msu_college_of_agriculture_and_natural_resources_to_honor_demmer_ceo"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Acknowledges land history, Focus on community engagement | Concerns: Lack of specific funding disclosure, Potential industry influence"
+  },
+  {
+    "name": "New Tab Marketing",
+    "domain": "newtab",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Dotdash Meredith",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Marketing industry"
+    ],
+    "author_credentials": "Staff writers, no medical expertise",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "Discloses funding"
+    ],
+    "expertise_areas": [
+      "marketing",
+      "advertising"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://newtabmarketing.com/",
+      "https://www.people.inc/",
+      "https://www.movadogroup.com/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "BMJ Evidence-Based Medicine",
+    "domain": "ebm.bmj.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "BMJ Publishing Group Ltd",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by British Medical Association"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://ebm.bmj.com/content/ebmed/29/Suppl_1/local/ed-board.pdf",
+      "https://ebm.bmj.com/content/ebmed/25/4/local/front-matter.pdf",
+      "https://ebm.bmj.com/content/ebmed/18/2/local/front-matter.pdf"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
   }
 ]

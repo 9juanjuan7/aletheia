@@ -19,7 +19,8 @@ import {
   Flag, 
   Search, 
   AlertTriangle, 
-  Info 
+  Info,
+  Scan
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -87,6 +88,7 @@ interface AletheiaSidebarProps {
   articleUrl?: string;
   data?: AnalysisData;
   onRefresh?: () => void;
+  onScan?: () => void;
 }
 
 export function AletheiaSidebar({
@@ -96,7 +98,8 @@ export function AletheiaSidebar({
   articleTitle,
   articleUrl,
   data,
-  onRefresh
+  onRefresh,
+  onScan
 }: AletheiaSidebarProps) {
   const publication = data?.main_publication;
   const articleSource = articleUrl ? new URL(articleUrl).hostname : '';
@@ -137,6 +140,17 @@ export function AletheiaSidebar({
                 Click the Aletheia icon on any health article to analyze it.
               </p>
             </div>
+            {onScan && (
+              <Button
+                onClick={onScan}
+                variant="outline"
+                size="sm"
+                className="mt-4"
+              >
+                <Scan className="h-4 w-4 mr-2" />
+                Scan Current Page
+              </Button>
+            )}
           </div>
         </div>
       </div>
