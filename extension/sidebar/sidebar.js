@@ -165,35 +165,138 @@ function displayFundingInfo(publication) {
     
     let html = '<div>';
     
-    // Funding sources
-    if (publication.funding_sources && publication.funding_sources.length > 0) {
-        html += `<div class="info-item">
-            <span class="info-label">💰 Funding:</span> 
-            ${publication.funding_sources.join(', ')}
-        </div>`;
-    }
+    const ownership = publication.ownership || '';
+    const fundingSources = publication.funding_sources || [];
+    const conflicts = publication.conflicts_of_interest || [];
+    const industryTies = publication.industry_ties || [];
+    const transparency = publication.funding_transparency || 'unknown';
     
-    // Ownership
-    if (publication.ownership && publication.ownership !== 'Unknown') {
+    // Detect source type
+    const isAcademic = ownership.toLowerCase().includes('university') || 
+                      ownership.toLowerCase().includes('college') ||
+                      publication.domain.includes('.edu');
+    
+    const isGovernment = ownership.toLowerCase().includes('department of') ||
+                        ownership.toLowerCase().includes('agency') ||
+                        ownership.toLowerCase().includes('cdc') ||
+                        ownership.toLowerCase().includes('fda') ||
+                        ownership.toLowerCase().includes('nih') ||
+                        ownership.toLowerCase().includes('usda') ||
+                        publication.domain.includes('.gov');
+    
+    // Ownership with indicator
+    if (ownership && ownership !== 'Unknown') {
+        let ownershipBadge = '';
+        if (isGovernment) {
+            ownershipBadge = '<span style="font-size: 11px; color: #e74c3c; font-style: italic;"> (Government Agency - Check for Industry Capture)</span>';
+        } else if (isAcademic) {
+            ownershipBadge = '<span style="font-size: 11px; color: #7f8c8d; font-style: italic;"> (Academic Institution)</span>';
+        }
+        
         html += `<div class="info-item">
             <span class="info-label">🏢 Ownership:</span> 
-            ${publication.ownership}
+            ${ownership}${ownershipBadge}
         </div>`;
     }
     
-    // Conflicts of interest
-    if (publication.conflicts_of_interest && publication.conflicts_of_interest.length > 0) {
-        html += `<div class="conflict">
-            <strong>⚠️ Conflicts of Interest:</strong><br>
-            ${publication.conflicts_of_interest.map(c => `• ${c}`).join('<br>')}
+    // Funding sources with context
+    if (fundingSources.length > 0) {
+        const fundingStr = fundingSources.join(', ').toLowerCase();
+        const hasUnknownFunding = fundingStr.includes('unclear') || 
+                                 fundingStr.includes('not disclosed') ||
+                                 fundingStr.includes('not available');
+        const hasGovernmentFunding = fundingStr.includes('government') || 
+                                    fundingStr.includes('federal') ||
+                                    fundingStr.includes('usda') ||
+                                    fundingStr.includes('fda') ||
+                                    fundingStr.includes('nih');
+        
+        html += `<div class="info-item">
+            <span class="info-label">💰 Funding Sources:</span><br>
+            <ul style="margin: 4px 0; padding-left: 20px; font-size: 13px;">`;
+        
+        fundingSources.forEach(source => {
+            html += `<li>${source}</li>`;
+        });
+        
+        html += `</ul></div>`;
+        
+        // Academic funding context
+        if (isAcademic && hasUnknownFunding) {
+            html += `<div class="warning" style="margin-top: 8px; font-size: 12px;">
+                ℹ️ <strong>Academic Funding Note:</strong> Universities often receive corporate research grants. 
+                Specific funding sources for this department/article may not be publicly disclosed.
+            </div>`;
+        }
+        
+        // Government funding context
+        if (isGovernment || hasGovernmentFunding) {
+            html += `<div class="warning" style="margin-top: 8px; font-size: 12px;">
+                ⚠️ <strong>Government Funding Note:</strong> Government agencies can be influenced by industry lobbying, 
+                revolving door employment, and regulatory capture. Check for specific industry ties.
+            </div>`;
+        }
+        
+    } else if (isAcademic) {
+        html += `<div class="info-item">
+            <span class="info-label">💰 Funding Sources:</span> 
+            <span style="color: #e74c3c;">Not disclosed</span>
         </div>`;
+        html += `<div class="warning" style="margin-top: 8px; font-size: 12px;">
+            ℹ️ <strong>Academic Funding Note:</strong> Universities often receive corporate research grants, 
+            but this institution does not publicly disclose funding sources. Cannot verify independence.
+        </div>`;
+    } else if (isGovernment) {
+        html += `<div class="info-item">
+            <span class="info-label">💰 Funding Sources:</span> 
+            Federal government appropriations
+        </div>`;
+        html += `<div class="warning" style="margin-top: 8px; font-size: 12px;">
+            ⚠️ <strong>Government Agency Note:</strong> Check for industry lobbying influence, 
+            revolving door employment, and regulatory capture. Government authority ≠ independence.
+        </div>`;
+    }
+    
+    // Funding transparency indicator
+    if (transparency && transparency !== 'unknown') {
+        let transparencyColor = '#27ae60';
+        let transparencyText = 'High';
+        
+        if (transparency === 'low') {
+            transparencyColor = '#e74c3c';
+            transparencyText = 'Low';
+        } else if (transparency === 'medium') {
+            transparencyColor = '#f39c12';
+            transparencyText = 'Medium';
+        } else if (transparency === 'none') {
+            transparencyColor = '#c0392b';
+            transparencyText = 'None';
+        }
+        
+        html += `<div class="info-item" style="margin-top: 8px;">
+            <span class="info-label">🔍 Funding Transparency:</span> 
+            <span style="color: ${transparencyColor}; font-weight: 600;">${transparencyText}</span>
+        </div>`;
+    }
+    
+    // Conflicts of interest (prominent display)
+    if (conflicts.length > 0) {
+        html += `<div class="conflict" style="margin-top: 12px;">
+            <strong>⚠️ Conflicts of Interest:</strong>
+            <ul style="margin: 4px 0; padding-left: 20px;">`;
+        
+        conflicts.forEach(conflict => {
+            html += `<li>${conflict}</li>`;
+        });
+        
+        html += `</ul></div>`;
     }
     
     // Industry ties
-    if (publication.industry_ties && publication.industry_ties.length > 0) {
-        html += `<div class="info-item">
-            <span class="info-label">🔗 Industry Ties:</span> 
-            ${publication.industry_ties.join(', ')}
+    if (industryTies.length > 0) {
+        html += `<div class="info-item" style="margin-top: 8px;">
+            <span class="info-label">🔗 Industry Ties:</span><br>
+            <span style="font-size: 13px;">${industryTies.join(', ')}</span>
         </div>`;
     }
     

@@ -167,5 +167,48 @@
       "https://www.econ.iastate.edu/about"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or lack of sourcing | Strengths: Affiliated with a recognized university | Concerns: No source citations, Unknown funding sources"
+  },
+  {
+    "name": "YouTube",
+    "domain": "youtube.com",
+    "credibility_score": 3.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Alphabet Inc.",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by Alphabet Inc., which has ties to various industries"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Advertising industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-27",
+    "research_sources": [
+      "https://youtubetomp4.it.com/youtube/who-owns-youtube/",
+      "https://www.youtube.com/watch?v=TEASFMly0xg",
+      "https://www.fool.com/investing/how-to-invest/stocks/who-owns-youtube/"
+    ],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
   }
 ]
