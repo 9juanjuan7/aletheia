@@ -18,9 +18,10 @@ class PublicationResearcher:
         
         is_academic = '.edu' in domain or self.is_university_domain(domain)
         is_government = '.gov' in domain or self.is_government_domain(domain)
+        is_pmc_paper = 'pmc.ncbi' in domain or 'pubmed' in domain.lower()
         
         print(f"🔍 Step 1: Searching web for {domain}...")
-        search_results = self.web_search(domain, is_academic, is_government)
+        search_results = self.web_search(domain, is_academic, is_government, is_pmc_paper)
         
         print(f"📄 Step 2: Scraping about page...")
         about_text = self.scrape_about_page(domain)
@@ -39,8 +40,15 @@ class PublicationResearcher:
             search_results.extend(gov_conflicts)
             print(f"   Found {len(gov_conflicts)} potential conflict sources")
         
+        # Enhanced PMC paper funding research
+        if is_pmc_paper:
+            print(f"📄 Step 2.5: Extracting individual paper funding...")
+            paper_funding = self.search_pmc_paper_funding(domain)
+            search_results.extend(paper_funding)
+            print(f"   Found {len(paper_funding)} paper funding sources")
+        
         print(f"🤖 Step 3: AI analyzing data...")
-        structured_data = self.analyze_with_ai(domain, search_results, about_text, is_academic, is_government)
+        structured_data = self.analyze_with_ai(domain, search_results, about_text, is_academic, is_government, is_pmc_paper)
         
         print(f"✅ AI analysis complete!")
         return structured_data
@@ -55,12 +63,21 @@ class PublicationResearcher:
         return any(indicator in domain_lower for indicator in university_indicators)
     
     def is_government_domain(self, domain):
-        """Check if domain is from a government agency"""
+        """
+        Check if domain is from a government agency
+        
+        YOUR VISION: PMC/PubMed are NOT government agencies - they're paper archives
+        Each paper has different authors/funding - treat individually
+        """
+        # Exclude PMC/PubMed - they're paper repositories, not agencies
+        if 'pmc.ncbi' in domain or 'pubmed' in domain.lower():
+            return False
+        
         return '.gov' in domain or domain.lower() in [
             'nih.gov', 'cdc.gov', 'fda.gov', 'usda.gov', 'who.int'
         ]
     
-    def web_search(self, domain, is_academic=False, is_government=False):
+    def web_search(self, domain, is_academic=False, is_government=False, is_pmc_paper=False):
         """Search the web for publication information"""
         
         base_queries = [
@@ -86,6 +103,14 @@ class PublicationResearcher:
                 f"{domain} industry influence revolving door",
                 f"{domain} pharmaceutical industry ties advisory board",
                 f"{domain} corporate lobbying conflicts"
+            ])
+        
+        # Add PMC paper-specific queries
+        if is_pmc_paper:
+            base_queries.extend([
+                f"{domain} author funding disclosure",
+                f"{domain} study funding source pharmaceutical",
+                f"{domain} research grant sponsor"
             ])
         
         all_results = []
@@ -194,6 +219,44 @@ class PublicationResearcher:
         
         return all_results
     
+    def search_pmc_paper_funding(self, domain):
+        """
+        Search for individual PMC paper's funding disclosure
+        
+        YOUR VISION: PMC is just a hosting platform - score the PAPER's funding, not the platform
+        """
+        
+        print(f"   PMC Paper: Extracting individual paper funding")
+        
+        funding_queries = [
+            f"site:{domain} funding disclosure",
+            f"site:{domain} author conflicts of interest",
+            f"site:{domain} grant support pharmaceutical",
+            f"site:{domain} study sponsor industry funding"
+        ]
+        
+        all_results = []
+        
+        for query in funding_queries[:4]:
+            try:
+                response = tavily_client.search(
+                    query=query,
+                    max_results=2,
+                    search_depth="basic"
+                )
+                
+                for result in response.get('results', []):
+                    all_results.append({
+                        'title': result.get('title', '') + ' [PAPER_FUNDING]',
+                        'content': result.get('content', ''),
+                        'url': result.get('url', '')
+                    })
+            except Exception as e:
+                print(f"   PMC paper funding search failed: {e}")
+                continue
+        
+        return all_results
+    
     def parse_government_domain(self, domain):
         """Extract agency name from government domain"""
         agency_map = {
@@ -204,8 +267,7 @@ class PublicationResearcher:
             'who.int': 'World Health Organization (WHO)',
             'cancer.gov': 'National Cancer Institute',
             'hhs.gov': 'Department of Health and Human Services',
-            'ncbi.nlm.nih.gov': 'National Center for Biotechnology Information (NCBI)',
-            'pmc.ncbi.nlm.nih.gov': 'PubMed Central (PMC)'
+            'ncbi.nlm.nih.gov': 'National Center for Biotechnology Information (NCBI)'
         }
         
         for key, value in agency_map.items():
@@ -325,7 +387,7 @@ class PublicationResearcher:
         
         return "About page not accessible"
     
-    def analyze_with_ai(self, domain, search_results, about_text, is_academic=False, is_government=False):
+    def analyze_with_ai(self, domain, search_results, about_text, is_academic=False, is_government=False, is_pmc_paper=False):
         """Use AI to extract structured medical publication data - FUNDING-FIRST approach with GOVERNMENT SKEPTICISM"""
         
         search_summary = "\n\n".join([
@@ -335,6 +397,7 @@ class PublicationResearcher:
         
         academic_instruction = ""
         government_instruction = ""
+        pmc_instruction = ""
         
         if is_academic:
             university_info = self.parse_academic_domain(domain)
@@ -393,49 +456,112 @@ OTHER:
         if is_government:
             agency_name = self.parse_government_domain(domain)
             
-            # Special handling for PubMed Central / NCBI
-            is_pubmed = 'pmc.ncbi' in domain or 'pubmed' in domain.lower()
-            
             government_instruction = f"""
 
 SPECIAL INSTRUCTION FOR GOVERNMENT SOURCES:
 This is a government agency: {agency_name}
 
-{'SPECIAL NOTE: This is PubMed Central (PMC) - an archive of peer-reviewed academic papers, NOT government agency content. Treat as academic paper repository.' if is_pubmed else ''}
-
-CRITICAL: Government agencies CAN be captured by industry.
+YOUR VISION: All government agencies start equal - adjust based on EVIDENCE FOUND, not prestige.
 
 Government Credibility Scoring:
-START at 6.0 for .gov domains, then:
+START at 6.0 for ALL .gov domains (no exceptions based on agency name)
 
-SPECIFIC AGENCIES:
-- PubMed Central / NCBI (academic paper archive): Start at 7.5 (hosts peer-reviewed papers)
-- USDA nutrition/dietary: Start at 4.0 (food industry capture)
-- FDA drug approvals: Start at 5.0 (pharma revolving door)
-- NIH basic research (not policy): Start at 7.0 (more independent)
-- CDC vaccines during controversy: Start at 5.5 (pharma ties)
-- Cancer.gov basic info: Start at 7.0 (generally reliable)
+Then adjust based on EVIDENCE FOUND IN SEARCH RESULTS:
 
-CHECK FOR CAPTURE:
--2.0: USDA nutrition guidelines
--1.5: FDA drug approvals during controversy
--1.0: Agency officials with industry ties
--1.0: Government-industry "partnerships"
--0.5: Advisory boards with corporate members
-+0.5: Basic research publications
-+1.0: Strong independence record
+SEARCH FOR CONFLICTS (extract from search results):
+-2.0: Search results document industry lobbying/influence (e.g., "USDA influenced by meat industry")
+-1.5: Search results document revolving door employment (e.g., "FDA official joined Pfizer")
+-1.0: Search results show industry advisory board members
+-1.0: Search results show "public-private partnerships" with industry
+-0.5: Search results show industry funding/grants
 
-Red Flags:
-- "Agency officials have industry ties/revolving door"
-- "USDA dietary guidelines (food industry influence)"
-- "Government-industry partnership"
-- "Advisory board includes corporate reps"
+SEARCH FOR INDEPENDENCE (extract from search results):
++1.0: Search results show strong conflict disclosure + no ties found
++0.5: Search results show independent funding only
++0.5: Content is basic research publication (less industry pressure)
 
-Green Flags:
-- "Basic research, not policy/guidelines"
-- "No documented industry conflicts"
-- "Strong independence record"
-- "PubMed Central academic paper archive"
+CONTENT TYPE (analyze what type of content this is):
+-1.0: Dietary/nutrition guidelines (high lobbying target, e.g., USDA food pyramid)
+-0.5: Drug/product approvals (revolving door risk, e.g., FDA drug approval pages)
+0.0: General health information
++0.5: Basic science research publication (less direct industry pressure)
+
+RED FLAGS TO EXTRACT FROM SEARCH:
+- "Agency influenced by [industry] lobby"
+- "Official joined [pharma/food company]"
+- "Advisory board includes [industry representatives]"
+- "Partnership with [corporate entity]"
+- "Funded by industry"
+- "Guidelines that benefit [industry financially]"
+
+GREEN FLAGS TO EXTRACT FROM SEARCH:
+- "Strong conflict of interest policies"
+- "Independent review board"
+- "No industry funding found"
+- "Transparent disclosure"
+- "Basic research, not policy"
+
+CRITICAL RULES:
+1. DO NOT give higher scores based on agency reputation (NIH, Cancer.gov, etc.)
+2. DO give higher scores based on EVIDENCE of independence in search results
+3. DO give lower scores based on EVIDENCE of capture in search results
+4. Content type matters: Guidelines (high risk) vs Basic research (lower risk)
+
+Example scoring logic:
+- NIH basic research + no conflicts found in searches = 6.0 + 0.5 (research) + 0.5 (independent) = 7.0
+- USDA dietary guideline + meat lobby documented = 6.0 - 1.0 (guideline) - 2.0 (lobbying) = 3.0
+- FDA general drug info + no specific conflicts = 6.0 + 0.0 (general info) = 6.0
+- CDC vaccine page + pharma ties found = 6.0 - 0.5 (approval type) - 1.0 (pharma ties) = 4.5
+"""
+        
+        if is_pmc_paper:
+            pmc_instruction = f"""
+
+🚨 CRITICAL INSTRUCTION FOR PMC/PUBMED PAPERS:
+
+This is a PAPER hosted on PubMed Central - NOT a government source.
+PMC is just a HOSTING PLATFORM. Each paper has different authors, institutions, and funders.
+
+YOUR VISION: Score the PAPER's funding, NOT the platform.
+
+DO NOT give automatic high scores because it's on PMC.
+PMC hosts BOTH independent research AND pharma-funded studies.
+
+SCORING INSTRUCTIONS FOR PMC PAPERS:
+
+START at 5.0 (neutral - platform doesn't determine credibility)
+
+Then adjust based on PAPER'S FUNDING (extract from search results):
+
+PAPER FUNDING DISCLOSED AS INDEPENDENT:
++2.0: NIH grant, no industry ties disclosed
++1.5: University grant, no conflicts
++1.0: Government basic research grant
+
+PAPER FUNDING DISCLOSED AS CORPORATE:
+-2.0: Pharma company funded/sponsored
+-1.5: Food industry grant
+-1.0: Medical device company funding
+-0.5: "Unrestricted grant" from industry
+
+NO FUNDING DISCLOSURE FOUND:
+-1.0: Lack of transparency is a red flag
+
+PEER REVIEW (Minor adjustment):
++0.5: Peer-reviewed publication (quality control)
+
+AUTHOR CONFLICTS:
+-1.0: Authors have disclosed pharma ties
+-1.5: Authors work for industry
+-0.5: Authors on pharma advisory boards
+
+CRITICAL: A PMC paper funded by Pfizer = 3.0-4.0/10 (pharma conflict)
+A PMC paper with independent NIH grant = 7.0-7.5/10 (independent)
+
+PMC is NEUTRAL INFRASTRUCTURE. The paper's funding is what matters.
+
+Extract paper funding from search results tagged [PAPER_FUNDING].
+If funding not found in search results, score 5.0 (neutral, cannot verify).
 """
 
         prompt = f"""
@@ -452,6 +578,8 @@ ABOUT PAGE TEXT:
 {academic_instruction}
 
 {government_instruction}
+
+{pmc_instruction}
 
 Return ONLY valid JSON with this exact structure:
 {{
@@ -477,11 +605,13 @@ Return ONLY valid JSON with this exact structure:
 
 CREDIBILITY SCORING SYSTEM (0-10) - FUNDING MATTERS MORE THAN CREDENTIALS OR AUTHORITY:
 
-START SCORES:
+YOUR VISION: Everyone starts equal - adjust based on EVIDENCE, not prestige/reputation
+
+START SCORES (baseline, not final):
 - General sources: 5.0
 - Academic (.edu): 6.0
-- Government (.gov): 6.0 (adjust heavily based on agency)
-- PubMed Central / academic paper archives: 7.5
+- Government (.gov): 6.0 (ALL agencies start at 6.0 - NO EXCEPTIONS for "prestigious" agencies)
+- PMC/PubMed PAPERS: 5.0 (NEUTRAL - adjust based on PAPER'S funding, not platform)
 - Independent nonprofit: 7.0
 - Commercial: 4.0
 
@@ -491,12 +621,12 @@ PRIMARY SOURCE VERIFICATION:
 -2.0: Rarely links
 -3.0: No citations
 
-FUNDING INDEPENDENCE:
+FUNDING INDEPENDENCE (based on EVIDENCE found):
 +2.0: Independent nonprofit, no corporate/gov ties, transparent
 +1.5: Subscription-only, no ads
 +1.0: Crowdfunded, transparent
-+0.5-1.0: Government basic research (not policy)
-0.0 to -0.5: Government agencies with potential capture
++0.5-1.0: Government basic research (not policy) + no conflicts found
+0.0 to -0.5: Government agencies with some capture evidence
 -1.0 to -2.0: Corporate donors or captured government
 -3.0 to -4.0: Owned by industry or hidden conflicts
 
@@ -509,21 +639,24 @@ TRANSPARENCY:
 +1.0: Full disclosure
 -1.0: Vague or missing disclosures
 
-CREDENTIALS:
+CREDENTIALS (minor weight):
 +1.0: Peer-reviewed journal
 +0.5: Medical credentials AND independent funding
 0.0: Medical credentials BUT corporate-funded
 -0.5: No expertise for medical topics
 
-CRITICAL RULES:
+CRITICAL RULES FOR YOUR VISION:
 1. Government authority ≠ trustworthy (agencies can be captured)
-2. PubMed Central = academic paper archive (score 7.5+)
-3. USDA nutrition = food industry capture (start 4.0)
-4. FDA pharma = revolving door (start 5.0)
-5. Academic = often corporate-funded
-6. Follow the money, not credentials
-7. Basic health facts (vegetables good) can be stated by funded sources - don't over-flag
-8. Return ONLY the JSON object
+2. Don't give NIH/Cancer.gov automatic high scores based on reputation
+3. DO give high scores if search results show independence + no conflicts
+4. PMC/PubMed = paper hosting platform (score individual PAPER's funding, not platform)
+5. USDA/FDA don't get automatic low scores - adjust based on what search results show
+6. Academic = often corporate-funded (check evidence)
+7. Follow the money from search results, not credentials or agency names
+8. Basic health facts (vegetables good) can be stated by funded sources - don't over-flag
+9. Content type matters: Guidelines (high lobbying risk) vs basic research (lower risk)
+10. Extract specific evidence from search results - don't assume based on names
+11. Return ONLY the JSON object
 """
         
         try:
@@ -534,13 +667,24 @@ CRITICAL RULES:
                         "role": "system",
                         "content": """You are a critical analyst highly skeptical of both corporate AND government authority. Expose funding conflicts and industry bias wherever it exists - including government agencies.
 
-Credentials mean NOTHING if funded by corporations. Government authority means NOTHING if captured by industry. USDA is captured by food industry. FDA has pharma revolving door.
+YOUR VISION: Everyone starts equal. Adjust based on EVIDENCE FOUND, not prestige or reputation.
 
-PubMed Central (pmc.ncbi.nlm.nih.gov) is an academic paper ARCHIVE, not government agency content - score it highly (7.5+).
+Credentials mean NOTHING if funded by corporations. Government authority means NOTHING if captured by industry. 
+
+Do NOT give NIH automatic high scores because "NIH = prestigious". 
+Do NOT give USDA automatic low scores because "USDA = bad reputation".
+
+Instead:
+- Start all .gov at 6.0
+- Search results show independence? Increase score.
+- Search results show capture? Decrease score.
+- Follow the EVIDENCE, not the NAME.
+
+PMC/PubMed are PAPER HOSTING PLATFORMS - not credible sources themselves. Score the INDIVIDUAL PAPER's funding, not the platform. A Pfizer-funded paper on PMC = LOW score. An independent NIH-funded paper on PMC = HIGH score (because of funding evidence, not because "NIH = good").
 
 For basic uncontroversial health facts (vegetables are healthy, water is necessary), don't over-flag as industry narrative unless promoting specific products.
 
-Prioritize funding transparency over credentials. Be skeptical of ALL authority - follow the money."""
+Prioritize funding transparency over credentials. Be skeptical of ALL authority - follow the money found in search results."""
                     },
                     {"role": "user", "content": prompt}
                 ],

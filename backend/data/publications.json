@@ -632,5 +632,90 @@
       "https://www.buffalo.edu/research/research-services/click-implementation/announcements.host.html/content/shared/university/news/news-center-releases/2000/05/4728.detail.html"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some funding disclosures | Concerns: Corporate funding, Potential conflicts of interest"
+  },
+  {
+    "name": "VeryWell Health",
+    "domain": "verywellhealth.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "People Inc.",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by pharma company X"
+    ],
+    "industry_ties": [
+      "Food industry",
+      "Supplement industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://mediabiasfactcheck.com/verywell/",
+      "https://www.verywellhealth.com/verywell-editorial-process-4777042",
+      "https://www.crunchbase.com/organization/verywell"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "The Lancet",
+    "domain": "thelancet.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Elsevier",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by pharma company Elsevier"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 1,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "medicine"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://mediabiasfactcheck.com/the-lancet/",
+      "https://simple.wikipedia.org/wiki/The_Lancet",
+      "https://www.thelancet.com/footer-terms"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
   }
 ]
