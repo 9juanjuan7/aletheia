@@ -1,15 +1,31 @@
 const API_URL = 'http://localhost:5000';
 
-// Analysis lock to prevent duplicate requests
-let analysisInProgress = false;
-let currentAnalysisUrl = null;
+// Use session storage to track analysis state (more reliable than variables)
+function isAnalysisInProgress(url) {
+    const inProgress = sessionStorage.getItem('aletheia_analyzing');
+    const analyzingUrl = sessionStorage.getItem('aletheia_url');
+    const timestamp = parseInt(sessionStorage.getItem('aletheia_timestamp') || '0');
+    
+    // Check if analysis is in progress for this URL within last 10 seconds
+    const now = Date.now();
+    if (inProgress === 'true' && analyzingUrl === url && (now - timestamp) < 10000) {
+        return true;
+    }
+    return false;
+}
+
+function setAnalysisInProgress(url, inProgress) {
+    sessionStorage.setItem('aletheia_analyzing', inProgress ? 'true' : 'false');
+    sessionStorage.setItem('aletheia_url', url);
+    sessionStorage.setItem('aletheia_timestamp', Date.now().toString());
+}
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'analyze') {
         // Prevent duplicate analysis
-        if (analysisInProgress && currentAnalysisUrl === message.url) {
-            console.log('Analysis already in progress for this URL');
+        if (isAnalysisInProgress(message.url)) {
+            console.log('⚠️ Analysis already in progress for this URL, ignoring duplicate request');
             return;
         }
         
@@ -18,14 +34,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function analyzeArticle(url, title) {
-    // Set lock
-    if (analysisInProgress && currentAnalysisUrl === url) {
-        console.log('Analysis already in progress, ignoring duplicate request');
+    // Double-check before starting
+    if (isAnalysisInProgress(url)) {
+        console.log('⚠️ Duplicate request blocked');
         return;
     }
     
-    analysisInProgress = true;
-    currentAnalysisUrl = url;
+    // Set lock
+    setAnalysisInProgress(url, true);
     
     // Show loading state
     document.getElementById('loading').style.display = 'block';
@@ -53,46 +69,10 @@ async function analyzeArticle(url, title) {
             <p>Make sure the backend is running on port 5000.</p>
         `;
     } finally {
-        // Release lock after 2 seconds
+        // Release lock after 3 seconds
         setTimeout(() => {
-            analysisInProgress = false;
-            currentAnalysisUrl = null;
-        }, 2000);
-    }
-}
-// Listen for messages from background script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'analyze') {
-        analyzeArticle(message.url, message.title);
-    }
-});
-
-async function analyzeArticle(url, title) {
-    // Show loading state
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('results').style.display = 'none';
-    
-    try {
-        // Call backend API
-        const response = await fetch(`${API_URL}/analyze`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url, title })
-        });
-        
-        const data = await response.json();
-        
-        // Display results
-        displayResults(data, title, url);
-        
-    } catch (error) {
-        console.error('Error analyzing article:', error);
-        document.getElementById('loading').innerHTML = `
-            <p>⚠️ Error connecting to Aletheia API.</p>
-            <p>Make sure the backend is running on port 5000.</p>
-        `;
+            setAnalysisInProgress(url, false);
+        }, 3000);
     }
 }
 
@@ -105,7 +85,7 @@ function displayResults(data, title, url) {
     const domain = new URL(url).hostname;
     document.getElementById('article-source').textContent = domain;
     
-    // IMPORTANT: Display claim classification first (new section)
+    // Display claim classification first
     displayClaimClassification(data.claim_classification);
     
     // Main source credibility
@@ -113,7 +93,7 @@ function displayResults(data, title, url) {
     displayFundingInfo(data.main_publication);
     displayFlags(data.main_publication);
     
-    // Adaptive evidence (replaces counter-perspective)
+    // Adaptive evidence
     displayAdaptiveEvidence(data.evidence, data.analysis);
     
     // Analysis warning
@@ -141,7 +121,6 @@ function displayClaimClassification(classification) {
     const warning = classification.warning;
     const redFlags = classification.red_flags || [];
     
-    // Determine styling based on classification
     let classEmoji = 'ℹ️';
     let classColor = '#3498db';
     let classText = classType.replace(/_/g, ' ');
@@ -167,12 +146,10 @@ function displayClaimClassification(classification) {
             </div>
     `;
     
-    // Add warning if exists
     if (warning) {
         html += `<div style="margin: 8px 0; font-size: 13px;">${warning}</div>`;
     }
     
-    // Add red flags
     if (redFlags.length > 0) {
         html += `<div style="margin-top: 8px; font-size: 12px; color: #666;">`;
         redFlags.slice(0, 3).forEach(flag => {
@@ -231,7 +208,6 @@ function displayFundingInfo(publication) {
     const industryTies = publication.industry_ties || [];
     const transparency = publication.funding_transparency || 'unknown';
     
-    // Detect source type
     const isAcademic = ownership.toLowerCase().includes('university') || 
                       ownership.toLowerCase().includes('college') ||
                       publication.domain.includes('.edu');
@@ -244,7 +220,6 @@ function displayFundingInfo(publication) {
                         ownership.toLowerCase().includes('usda') ||
                         publication.domain.includes('.gov');
     
-    // Ownership with indicator
     if (ownership && ownership !== 'Unknown') {
         let ownershipBadge = '';
         if (isGovernment) {
@@ -259,7 +234,6 @@ function displayFundingInfo(publication) {
         </div>`;
     }
     
-    // Funding sources with context
     if (fundingSources.length > 0) {
         const fundingStr = fundingSources.join(', ').toLowerCase();
         const hasUnknownFunding = fundingStr.includes('unclear') || 
@@ -281,7 +255,6 @@ function displayFundingInfo(publication) {
         
         html += `</ul></div>`;
         
-        // Academic funding context
         if (isAcademic && hasUnknownFunding) {
             html += `<div class="warning" style="margin-top: 8px; font-size: 12px;">
                 ℹ️ <strong>Academic Funding Note:</strong> Universities often receive corporate research grants. 
@@ -289,7 +262,6 @@ function displayFundingInfo(publication) {
             </div>`;
         }
         
-        // Government funding context
         if (isGovernment || hasGovernmentFunding) {
             html += `<div class="warning" style="margin-top: 8px; font-size: 12px;">
                 ⚠️ <strong>Government Funding Note:</strong> Government agencies can be influenced by industry lobbying, 
@@ -317,7 +289,6 @@ function displayFundingInfo(publication) {
         </div>`;
     }
     
-    // Funding transparency indicator
     if (transparency && transparency !== 'unknown') {
         let transparencyColor = '#27ae60';
         let transparencyText = 'High';
@@ -339,7 +310,6 @@ function displayFundingInfo(publication) {
         </div>`;
     }
     
-    // Conflicts of interest (prominent display)
     if (conflicts.length > 0) {
         html += `<div class="conflict" style="margin-top: 12px;">
             <strong>⚠️ Conflicts of Interest:</strong>
@@ -352,7 +322,6 @@ function displayFundingInfo(publication) {
         html += `</ul></div>`;
     }
     
-    // Industry ties
     if (industryTies.length > 0) {
         html += `<div class="info-item" style="margin-top: 8px;">
             <span class="info-label">🔗 Industry Ties:</span><br>
@@ -370,7 +339,6 @@ function displayFlags(publication) {
     
     let html = '';
     
-    // Red flags
     if (publication.red_flags && publication.red_flags.length > 0) {
         html += `<div class="conflict">
             <strong>🚩 Red Flags:</strong><br>
@@ -378,7 +346,6 @@ function displayFlags(publication) {
         </div>`;
     }
     
-    // Green flags
     if (publication.green_flags && publication.green_flags.length > 0) {
         html += `<div class="success-box">
             <strong>✅ Green Flags:</strong><br>
@@ -405,7 +372,6 @@ function displayAdaptiveEvidence(evidence, analysis) {
     const evidenceName = evidencePub.name || evidencePub.domain;
     const label = evidence.label || 'Additional Evidence';
     
-    // Determine section title emoji based on label
     let sectionEmoji = '🔍';
     if (label.includes('Independent')) {
         sectionEmoji = '🔬';
@@ -415,7 +381,6 @@ function displayAdaptiveEvidence(evidence, analysis) {
         sectionEmoji = '🛡️';
     }
     
-    // Update section title dynamically
     document.querySelector('#evidence-section h2').innerHTML = `${sectionEmoji} ${label}`;
     
     let scoreClass = 'low';
@@ -447,7 +412,6 @@ function displayAdaptiveEvidence(evidence, analysis) {
             </div>
     `;
     
-    // Show funding comparison if available
     if (evidencePub.funding_sources && evidencePub.funding_sources.length > 0) {
         html += `
             <div class="info-item">
@@ -457,7 +421,6 @@ function displayAdaptiveEvidence(evidence, analysis) {
         `;
     }
     
-    // Show funding diversity if calculated
     if (analysis && analysis.funding_diversity !== undefined) {
         const diversity = analysis.funding_diversity;
         let diversityColor = diversity >= 70 ? '#27ae60' : diversity >= 40 ? '#f39c12' : '#e74c3c';
@@ -470,7 +433,6 @@ function displayAdaptiveEvidence(evidence, analysis) {
         `;
     }
     
-    // Show credibility gap
     if (analysis && analysis.credibility_difference) {
         const diff = analysis.credibility_difference;
         if (diff >= 2) {
@@ -496,7 +458,6 @@ function displayAnalysisWarning(analysis) {
         return;
     }
     
-    // Use classification warning first, fallback to analysis warning
     const warning = analysis.classification_warning || analysis.warning;
     
     if (!warning) {
@@ -504,7 +465,6 @@ function displayAnalysisWarning(analysis) {
         return;
     }
     
-    // Determine warning style based on content
     let warningClass = 'warning';
     if (warning.includes('🚨') || warning.includes('CRITICAL')) {
         warningClass = 'conflict';

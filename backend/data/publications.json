@@ -461,5 +461,176 @@
       "https://pmc.ncbi.nlm.nih.gov/articles/PMC8569392/"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Links to studies, Basic research focus | Concerns: Potential industry influence, No detailed funding disclosure"
+  },
+  {
+    "name": "Taylor & Francis Online",
+    "domain": "tandfonline.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "medium",
+    "ownership": "Informa plc",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by Informa plc, which has ties to various industries"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Academic publishing"
+    ],
+    "author_credentials": "Varied authors, some with MDs, but many are staff writers",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking, but potential for bias due to funding",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition",
+      "social sciences"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.tandfonline.com/doi/full/10.1080/09692290.2025.2589953?src=",
+      "https://www.tandfonline.com/doi/pdf/10.1080/17521742.2013.870718",
+      "https://taylorandfrancis.com/about/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "World Health Organization (WHO)",
+    "domain": "who.int",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "United Nations",
+    "funding_sources": [
+      "Member state contributions",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Received funding from pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Health industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential industry influence"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.investopedia.com/terms/p/parentcompany.asp",
+      "https://www.legalzoom.com/articles/who-owns-a-corporation",
+      "https://www.youtube.com/watch?v=8G_KHSMJ3hw"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential industry influence"
+  },
+  {
+    "name": "Who Owns Facebook?",
+    "domain": "facebook.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "high",
+    "ownership": "Meta Platforms, Inc.",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by Mark Zuckerberg"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Advertising industry"
+    ],
+    "author_credentials": "Staff writers, no specific medical expertise",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "social media",
+      "advertising"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://champsignal.com/ownership/facebook.com",
+      "https://www.facebook.com/unboxfactory/posts/ever-wondered-who-holds-the-biggest-stakes-in-meta-formerly-facebook-as-of-septe/689541123396941/",
+      "https://portersfiveforce.com/blogs/owners/meta"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "Philanthropy - University at Buffalo",
+    "domain": "buffalo.edu",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Delaware North Companies, Inc.",
+    "funding_sources": [
+      "Corporate donations",
+      "Advertising"
+    ],
+    "conflicts_of_interest": [
+      "Potential influence from corporate donors"
+    ],
+    "industry_ties": [
+      "Food industry"
+    ],
+    "author_credentials": "University staff, potential corporate influence",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate funding",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Some funding disclosures"
+    ],
+    "expertise_areas": [
+      "philanthropy",
+      "education"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.buffalo.edu/news/news-releases/news-by-topic/philanthropy.html?par_newslist_start=270",
+      "https://digitalcommons.law.buffalo.edu/cgi/viewcontent.cgi?article=2092&context=buffalolawreview",
+      "https://www.buffalo.edu/research/research-services/click-implementation/announcements.host.html/content/shared/university/news/news-center-releases/2000/05/4728.detail.html"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some funding disclosures | Concerns: Corporate funding, Potential conflicts of interest"
   }
 ]
