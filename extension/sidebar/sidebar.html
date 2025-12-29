@@ -1,58 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aletheia Analysis</title>
     <link rel="stylesheet" href="sidebar.css">
-    <title>Aletheia - Truth Analysis</title>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🔍 Aletheia</h1>
-            <p class="tagline">Exposing funding, conflicts, and narratives</p>
+            <p class="tagline">Exposing Funding Conflicts & Misinformation</p>
         </header>
 
-        <div id="loading" class="section">
-            <p>🔄 Analyzing article...</p>
-            <p style="font-size: 12px; color: #7f8c8d;">Researching publication funding and credibility...</p>
+        <!-- Loading State -->
+        <div id="loading" style="display: block;">
+            <p>🔍 Analyzing article...</p>
+            <p style="font-size: 12px; color: #7f8c8d;">Following the money...</p>
         </div>
 
+        <!-- Results -->
         <div id="results" style="display: none;">
             <!-- Article Info -->
             <div class="section">
-                <h2>📄 Article Being Analyzed</h2>
+                <h2>📄 Article</h2>
                 <p class="article-title" id="article-title"></p>
                 <p class="source" id="article-source"></p>
             </div>
 
-            <!-- Main Source Credibility -->
-            <div class="section">
-                <h2>🎯 Source Credibility</h2>
-                <div id="credibility-score"></div>
-                <div id="funding-info"></div>
-                <div id="red-flags"></div>
-                <div id="green-flags"></div>
+            <!-- NEW: Claim Classification Section -->
+            <div class="section" id="classification-section">
+                <h2>🔬 Claim Classification</h2>
+                <div id="claim-classification"></div>
             </div>
 
-            <!-- Counter-Perspective -->
-            <div class="section" id="counter-section">
-                <h2>🔄 Counter-Perspective Found</h2>
-                <div id="counter-perspective"></div>
+            <!-- Source Credibility -->
+            <div class="section">
+                <h2>📊 Source Credibility</h2>
+                <div id="credibility-score"></div>
+            </div>
+
+            <!-- Funding Information -->
+            <div class="section">
+                <h2>💰 Funding & Conflicts</h2>
+                <div id="funding-info"></div>
+            </div>
+
+            <!-- Red/Green Flags -->
+            <div class="section">
+                <h2>🚩 Credibility Indicators</h2>
+                <div id="flags"></div>
+            </div>
+
+            <!-- UPDATED: Adaptive Evidence (was Counter-Perspective) -->
+            <div class="section" id="evidence-section">
+                <h2 id="evidence-title">🔍 Additional Evidence</h2>
+                <div id="adaptive-evidence"></div>
             </div>
 
             <!-- Analysis Warning -->
-            <div id="analysis-warning" style="display: none;"></div>
+            <div id="analysis-warning"></div>
 
             <!-- Myth Detection -->
-            <div class="section" id="myth-section" style="display: none;">
-                <h2>⚠️ Myth Detection</h2>
+            <div class="section" id="myth-section">
+                <h2>⚠️ Known Health Myths</h2>
                 <div id="myth-detection"></div>
             </div>
 
             <!-- Missing Context -->
             <div class="section">
-                <h2>🚨 Critical Context</h2>
+                <h2>ℹ️ Missing Context</h2>
                 <div id="missing-context"></div>
             </div>
         </div>
