@@ -141,18 +141,6 @@ aletheia/
 - [ ] Community features
 - [ ] Blockchain integration (Sui)
 
-## 📝 License
-
-Open Source (TBD)
-
-## 🤝 Contributing
-
-Contributions welcome! This project needs:
-- Frontend developers
-- Data scientists
-- Medical researchers
-- Anyone passionate about exposing health misinformation
-
 ## ⚠️ Disclaimer
 
 Aletheia is a research tool. Always consult qualified healthcare professionals for medical decisions.
@@ -162,5 +150,6 @@ Aletheia is a research tool. Always consult qualified healthcare professionals f
 **Built with skepticism. Powered by independence.**
 
 *"Follow the money, find the truth."*
+
 
 
