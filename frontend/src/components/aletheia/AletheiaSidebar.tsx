@@ -11,6 +11,7 @@ import { MythDetection } from "./MythDetection";
 import { MissingContext } from "./MissingContext";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import { CollapsibleSection } from "./CollapsibleSection";
+import { MultiDimensionalAnalysis } from "./MultiDimensionalAnalysis";
 import { 
   FileText, 
   FlaskConical, 
@@ -72,6 +73,24 @@ interface AnalysisData {
   analysis?: Analysis;
   myths?: Myth[];
   missing_context?: string[];
+  multi_dimensional_analysis?: {
+    funding_independence_score?: number;
+    research_support_pattern?: {
+      pattern: string;
+      description: string;
+    };
+    source_quality_score?: number;
+    debate_status?: string;
+    debate_description?: string;
+    claims?: Array<{
+      claim: string;
+      type: string;
+      supporting_count?: number;
+      contradicting_count?: number;
+      evidence_pattern?: string;
+    }>;
+    recommendation?: string;
+  };
 }
 
 interface LoadingStep {
@@ -190,7 +209,7 @@ export function AletheiaSidebar({
           </div>
         )}
 
-        {/* Credibility Score */}
+        {/* Source Credibility */}
         {publication && (
           <div className="px-4 py-4 border-b border-border">
             <div className="flex items-center gap-2 mb-3">
@@ -199,11 +218,23 @@ export function AletheiaSidebar({
                 Source Credibility
               </span>
             </div>
-            <CredibilityScore
-              score={publication.credibility_score || 0}
-              name={publication.name || publication.domain}
-              explanation={publication.credibility_explanation}
-            />
+            {data.multi_dimensional_analysis ? (
+              <MultiDimensionalAnalysis
+                funding_independence_score={data.multi_dimensional_analysis.funding_independence_score}
+                research_support_pattern={data.multi_dimensional_analysis.research_support_pattern}
+                source_quality_score={data.multi_dimensional_analysis.source_quality_score}
+                debate_status={data.multi_dimensional_analysis.debate_status}
+                debate_description={data.multi_dimensional_analysis.debate_description}
+                claims={data.multi_dimensional_analysis.claims}
+                recommendation={data.multi_dimensional_analysis.recommendation}
+              />
+            ) : (
+              <CredibilityScore
+                score={publication.credibility_score || 0}
+                name={publication.name || publication.domain}
+                explanation={publication.credibility_explanation}
+              />
+            )}
           </div>
         )}
 
@@ -249,14 +280,24 @@ export function AletheiaSidebar({
               <SourceComparison
                 mainSource={{
                   name: publication?.name || publication?.domain || 'Main Source',
-                  score: publication?.credibility_score || 0
+                  score: publication?.credibility_score || 0,
+                  multiDimensionalScores: data.multi_dimensional_analysis ? {
+                    funding_independence_score: data.multi_dimensional_analysis.funding_independence_score,
+                    research_support_pattern: data.multi_dimensional_analysis.research_support_pattern,
+                    source_quality_score: data.multi_dimensional_analysis.source_quality_score
+                  } : undefined
                 }}
                 evidenceSource={{
                   name: data.evidence.publication.name || data.evidence.publication.domain,
                   score: data.evidence.publication.credibility_score || 0,
                   url: data.evidence.article?.url,
                   title: data.evidence.article?.title,
-                  fundingSources: data.evidence.publication.funding_sources
+                  fundingSources: data.evidence.publication.funding_sources,
+                  multiDimensionalScores: data.evidence.multi_dimensional_scores ? {
+                    funding_independence_score: data.evidence.multi_dimensional_scores.funding_independence_score,
+                    research_support_pattern: data.evidence.multi_dimensional_scores.research_support_pattern,
+                    source_quality_score: data.evidence.multi_dimensional_scores.source_quality_score
+                  } : undefined
                 }}
                 label={data.evidence.label}
                 fundingDiversity={data.analysis?.funding_diversity}

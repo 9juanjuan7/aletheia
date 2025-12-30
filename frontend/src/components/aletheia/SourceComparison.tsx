@@ -9,6 +9,14 @@ interface SourceData {
   url?: string;
   title?: string;
   fundingSources?: string[];
+  multiDimensionalScores?: {
+    funding_independence_score?: number;
+    research_support_pattern?: {
+      pattern: string;
+      description: string;
+    };
+    source_quality_score?: number;
+  };
 }
 
 interface SourceComparisonProps {
@@ -59,12 +67,40 @@ export function SourceComparison({
         {/* Main Source */}
         <div className="border border-border p-3">
           <p className="data-label mb-2">Main Source</p>
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-foreground">
-              {mainSource.name}
-            </span>
-            <CredibilityScore score={mainSource.score} compact />
-          </div>
+          {mainSource.multiDimensionalScores ? (
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-foreground mb-2">{mainSource.name}</p>
+              <div className="text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Funding Independence:</span>
+                  <span className="font-mono font-semibold text-foreground">
+                    {mainSource.multiDimensionalScores.funding_independence_score?.toFixed(1)}/10
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Research Support:</span>
+                  </div>
+                  <span className="text-foreground font-medium">
+                    {mainSource.multiDimensionalScores.research_support_pattern?.pattern}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Source Quality:</span>
+                  <span className="font-mono font-semibold text-foreground">
+                    {mainSource.multiDimensionalScores.source_quality_score?.toFixed(1)}/10
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-foreground">
+                {mainSource.name}
+              </span>
+              <CredibilityScore score={mainSource.score} compact />
+            </div>
+          )}
         </div>
 
         {/* Evidence Source */}
@@ -76,12 +112,40 @@ export function SourceComparison({
             
             <div className="border border-border p-3">
               <p className="data-label mb-2">{label}</p>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-foreground">
-                  {evidenceSource.name}
-                </span>
-                <CredibilityScore score={evidenceSource.score} compact />
-              </div>
+              {evidenceSource.multiDimensionalScores ? (
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-foreground mb-2">{evidenceSource.name}</p>
+                  <div className="text-xs space-y-1.5">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Funding Independence:</span>
+                      <span className="font-mono font-semibold text-foreground">
+                        {evidenceSource.multiDimensionalScores.funding_independence_score?.toFixed(1)}/10
+                      </span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Research Support:</span>
+                      </div>
+                      <span className="text-foreground font-medium">
+                        {evidenceSource.multiDimensionalScores.research_support_pattern?.pattern}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Source Quality:</span>
+                      <span className="font-mono font-semibold text-foreground">
+                        {evidenceSource.multiDimensionalScores.source_quality_score?.toFixed(1)}/10
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold text-foreground">
+                    {evidenceSource.name}
+                  </span>
+                  <CredibilityScore score={evidenceSource.score} compact />
+                </div>
+              )}
               
               {evidenceSource.title && evidenceSource.url && (
                 <a 

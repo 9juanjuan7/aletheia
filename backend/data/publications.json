@@ -43,20 +43,47 @@
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts due to ownership"
   },
   {
-    "domain": "webmd.com",
     "name": "WebMD",
-    "owner": "Internet Brands (KKR private equity)",
-    "funding_model": "Advertising",
-    "major_advertisers": [
-      "Pharmaceutical companies",
-      "Health insurance",
-      "Medical device manufacturers"
+    "domain": "webmd.com",
+    "credibility_score": 3.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Internet Brands (owned by KKR)",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
     ],
-    "credibility_rating": "Mostly Factual",
-    "conflicts": [
-      "Significant pharmaceutical advertising",
-      "May favor advertiser interests in content"
-    ]
+    "conflicts_of_interest": [
+      "Owned by pharma company KKR"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Advertising partners"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to some studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.fiercehealthcare.com/hospitals-health-systems/webmd-acquires-provider-search-tool-vitals-com-second-acquisition-two",
+      "https://ciobulletin.com/healthcare/webmd-acquired-by-internet-brands",
+      "https://www.cnbc.com/2017/07/24/webmd-to-be-acquired-by-kkr-for-66-point-50-a-share-in-cash.html"
+    ],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Discloses funding, Links to some studies | Concerns: Pharma-funded, Potential conflicts of interest"
   },
   {
     "name": "Medical News Today",
@@ -788,36 +815,36 @@
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
   },
   {
-    "name": "Hospital Ownership and Financial Stability: A Matched Case ...",
+    "name": "Hospital Ownership and Financial Stability: A Matched ...",
     "domain": "pubmed.ncbi.nlm.nih.gov",
     "credibility_score": 5.0,
     "primary_source_links": true,
     "funding_transparency": "high",
-    "ownership": "Not specified",
+    "ownership": "National Institutes of Health (NIH)",
     "funding_sources": [],
     "conflicts_of_interest": [],
     "industry_ties": [],
-    "author_credentials": "Not specified",
-    "peer_reviewed": false,
-    "editorial_standards": "Basic fact-checking",
+    "author_credentials": "Authors affiliated with academic institutions",
+    "peer_reviewed": true,
+    "editorial_standards": "Peer-reviewed publication",
     "retraction_history": 0,
-    "fact_check_rating": "Mixed",
+    "fact_check_rating": "High",
     "red_flags": [],
     "green_flags": [
       "No industry funding found",
-      "Independent research"
+      "Peer-reviewed"
     ],
     "expertise_areas": [
-      "health",
-      "finance"
+      "healthcare economics",
+      "hospital management"
     ],
     "last_updated": "2025-12-28",
     "research_sources": [
       "https://pubmed.ncbi.nlm.nih.gov/34779183/",
-      "https://pubmed.ncbi.nlm.nih.gov/41079424/",
+      "https://www.ncbi.nlm.nih.gov/books/NBK217919/",
       "https://www.ncbi.nlm.nih.gov/books/NBK217897/"
     ],
-    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: No industry funding found, Independent research"
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: No industry funding found, Peer-reviewed"
   },
   {
     "name": "Sustainable Nutrition Initiative",
@@ -1923,5 +1950,303 @@
       "https://ebm.bmj.com/content/ebmed/18/2/local/front-matter.pdf"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "Today's Dietitian",
+    "domain": "todaysdietitian.com",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Great Valley Publishing",
+    "funding_sources": [
+      "Corporate sponsorship",
+      "Advertising"
+    ],
+    "conflicts_of_interest": [
+      "Potential conflicts due to industry sponsorships"
+    ],
+    "industry_ties": [
+      "Food industry",
+      "Supplement industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate sponsorship",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://ce.wolfrinke.com/",
+      "https://www.zoominfo.com/c/todays-dietitian/161956001",
+      "https://www.todaysdietitian.com/newarchives/011315p34.shtml?dlvrit=1379045"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Corporate sponsorship, Potential conflicts of interest"
+  },
+  {
+    "name": "U.S. Apple Association",
+    "domain": "usapple.org",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "high",
+    "ownership": "U.S. Apple Association",
+    "funding_sources": [
+      "Membership fees",
+      "Industry sponsorships"
+    ],
+    "conflicts_of_interest": [
+      "Represents apple industry interests"
+    ],
+    "industry_ties": [
+      "Agricultural industry",
+      "Food industry"
+    ],
+    "author_credentials": "Staff writers, no specific medical expertise",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Industry advocacy",
+      "Potential bias towards apple products"
+    ],
+    "green_flags": [
+      "Discloses funding sources",
+      "Links to industry-related studies"
+    ],
+    "expertise_areas": [
+      "Agriculture",
+      "Nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.linkedin.com/company/usapple",
+      "https://usapple.org/about-usapple",
+      "https://en.wikipedia.org/wiki/USApple_Association"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding sources, Links to industry-related studies | Concerns: Industry advocacy, Potential bias towards apple products"
+  },
+  {
+    "name": "Dermatology Times",
+    "domain": "dermatologytimes.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "MJH Life Sciences",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by MJH Life Sciences, which has ties to pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Limited source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Some links to studies"
+    ],
+    "expertise_areas": [
+      "dermatology",
+      "clinical insights"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.dermatologytimes.com/view/dermatology-times-parent-company-mjh-life-sciences-acquires-revolutionizing-atopic-dermatitis-rad-conference",
+      "https://www.linkedin.com/posts/dermatology-times_dermatology-times-parent-company-mjh-life-activity-7262171029316206592-ZcTL",
+      "https://www.dermatologytimes.com/view/strengthen-your-expertise-and-your-practice-one-conference-at-a-time"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Some links to studies | Concerns: Pharma-funded, Limited source links"
+  },
+  {
+    "name": "Journal of Integrative Dermatology",
+    "domain": "jintegrativederm.org",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Integrative Medicine Enterprises, LLC",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to integrative medicine industry"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Supplement industry"
+    ],
+    "author_credentials": "Joseph Pizzorno, ND, and other contributors with varying credentials",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential industry influence",
+      "Limited funding disclosure"
+    ],
+    "green_flags": [
+      "Peer-reviewed",
+      "Focus on integrative approaches"
+    ],
+    "expertise_areas": [
+      "dermatology",
+      "integrative medicine"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://ca.ltddir.com/companies/integrative-medicine-enterprises-llc/",
+      "https://www.datanyze.com/companies/integrative-medicine/29971857",
+      "https://www.sec.gov/Archives/edgar/data/1964738/000162828024005591/exhibit991-form10.htm"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Peer-reviewed, Focus on integrative approaches | Concerns: Potential industry influence, Limited funding disclosure"
+  },
+  {
+    "name": "American Academy of Dermatology",
+    "domain": "aad.org",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "American Academy of Dermatology Inc.",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "High percentage of authors receiving industry payments"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "High industry payment to authors",
+      "Potential bias from sponsorship"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "dermatology",
+      "skin health"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://projects.propublica.org/nonprofits/organizations/410793046",
+      "https://en.wikipedia.org/wiki/American_Academy_of_Dermatology",
+      "https://www.aad.org/about-aad"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: High industry payment to authors, Potential bias from sponsorship"
+  },
+  {
+    "name": "Publication name",
+    "domain": "onlinelibrary.wiley.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Wiley",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by pharmaceutical companies"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Food industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Potential conflicts of interest"
+    ],
+    "green_flags": [
+      "Some disclosure of funding"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/Wiley_(publisher)",
+      "https://onlinelibrary.wiley.com/doi/10.1111/0022-1082.00115",
+      "https://sms.onlinelibrary.wiley.com/doi/abs/10.1002/smj.3582"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some disclosure of funding | Concerns: Pharma-funded, Potential conflicts of interest"
+  },
+  {
+    "name": "SAGE Journals",
+    "domain": "journals.sagepub.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "mixed",
+    "ownership": "SAGE Publishing",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by SAGE Publishing, potential industry ties"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Education sector"
+    ],
+    "author_credentials": "Varied, some peer-reviewed contributions",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic fact-checking, potential biases",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Potential pharma influence",
+      "Limited funding disclosure"
+    ],
+    "green_flags": [
+      "Some articles disclose funding",
+      "Peer-reviewed content"
+    ],
+    "expertise_areas": [
+      "health",
+      "social sciences"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://librarytechnology.org/vendor/sage",
+      "https://www.publishersweekly.com/pw/by-topic/industry-news/industry-deals/article/88071-control-of-sage-publishing-moves-to-trust.html",
+      "https://www.bloomberg.com/profile/company/32347Z:US"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some articles disclose funding, Peer-reviewed content | Concerns: Potential pharma influence, Limited funding disclosure"
   }
 ]

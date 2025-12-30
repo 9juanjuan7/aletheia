@@ -6,6 +6,14 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 from services.publication_researcher import PublicationResearcher
 from services.claim_analyzer import ClaimAnalyzer
+from services.claim_verification import ClaimAnalyzer as ClaimVerifier
+from services.scoring import (
+    calculate_funding_independence_score,
+    calculate_claim_accuracy_score,
+    calculate_source_quality_score,
+    calculate_nuanced_recommendation,
+    analyze_research_support_pattern
+)
 from tavily import TavilyClient
 import re
 import queue
@@ -26,6 +34,7 @@ with open('data/myths.json', 'r') as f:
 # Initialize services
 researcher = PublicationResearcher()
 claim_analyzer = ClaimAnalyzer()
+claim_verifier = ClaimVerifier()
 tavily_client = TavilyClient(api_key=os.getenv('TAVILY_API_KEY'))
 
 # Progress tracking
@@ -604,7 +613,7 @@ def analyze_stream():
     return Response(generate(), mimetype='text/event-stream')
 
 def analyze_with_progress(url, title, session_id):
-    """Analyze article with progress updates"""
+    """Analyze article with progress updates and multi-dimensional scoring"""
     article_content = ""
     domain = extract_domain(url)
     
@@ -615,21 +624,31 @@ def analyze_with_progress(url, title, session_id):
     send_progress(session_id, f"🔍 Researching {domain}")
     main_publication = get_or_research_publication(domain, session_id)
     
-    # 2. Claim classification
-    send_progress(session_id, "💰 Analyzing claim conflicts")
+    # 2. Extract and verify claims
+    send_progress(session_id, "🔬 Analyzing health claims")
+    claims = claim_verifier.extract_claims(title, article_content)
+    claims_analysis = []
+    
+    for claim in claims[:2]:  # Limit to 2 claims to stay under API budget
+        claim_data = claim_verifier.verify_claim(claim.get('claim', ''), claim.get('type', 'efficacy'))
+        claims_analysis.append(claim_data)
+        send_progress(session_id, "🔬 Analyzing health claims", f"→ Verified: {claim.get('claim', '')[:40]}...")
+    
+    # 3. Claim classification
+    send_progress(session_id, "💰 Analyzing funding conflicts")
     claim_classification = claim_analyzer.analyze_claim(title, article_content, main_publication)
     
     classification_name = claim_classification['classification'].replace('_', ' ').title()
-    send_progress(session_id, "💰 Analyzing claim conflicts", f"→ Classification: {classification_name}")
+    send_progress(session_id, "💰 Analyzing funding conflicts", f"→ Classification: {classification_name}")
     
     # Check for conflicts
     if claim_classification.get('red_flags'):
         conflict_count = len(claim_classification['red_flags'])
-        send_progress(session_id, "💰 Analyzing claim conflicts", f"→ {conflict_count} potential conflict(s) detected")
+        send_progress(session_id, "💰 Analyzing funding conflicts", f"→ {conflict_count} potential conflict(s) detected")
     else:
-        send_progress(session_id, "💰 Analyzing claim conflicts", "→ No major conflicts detected")
+        send_progress(session_id, "💰 Analyzing funding conflicts", "→ No major conflicts detected")
     
-    # 3. Detect myths
+    # 4. Detect myths
     detected_myths = []
     title_lower = title.lower()
     for myth in MYTHS:
@@ -638,12 +657,46 @@ def analyze_with_progress(url, title, session_id):
                 detected_myths.append(myth)
                 break
     
-    # 4. Evidence search
+    # 5. Detect debate status
+    send_progress(session_id, "🔄 Detecting debate status")
+    debate_analysis = claim_verifier.detect_debate(claims_analysis)
+    send_progress(session_id, "🔄 Detecting debate status", f"→ {debate_analysis['debate_status']}")
+    
+    # 6. Calculate three-dimensional scores (funding + quality) and research support pattern
+    send_progress(session_id, "📊 Analyzing credibility dimensions")
+    funding_score = calculate_funding_independence_score(main_publication)
+    quality_score = calculate_source_quality_score(main_publication)
+    research_pattern = analyze_research_support_pattern(claims_analysis)
+    
+    send_progress(session_id, "📊 Analyzing credibility dimensions", 
+                  f"→ Funding: {funding_score:.1f}/10 | Quality: {quality_score:.1f}/10 | Research: {research_pattern['pattern']}")
+    
+    # 7. Evidence search
     evidence = find_adaptive_evidence(
         title, domain, main_publication, claim_classification, article_content, session_id
     )
     
-    # 5. Generate analysis
+    # Add three-dimensional scores to evidence source if found
+    if evidence and evidence.get('publication'):
+        evidence_pub = evidence['publication']
+        evidence_funding_score = calculate_funding_independence_score(evidence_pub)
+        evidence_accuracy_score = calculate_claim_accuracy_score(claims_analysis)  # Same claims, different source
+        evidence_quality_score = calculate_source_quality_score(evidence_pub)
+        
+        evidence['multi_dimensional_scores'] = {
+            'funding_independence_score': evidence_funding_score,
+            'claim_accuracy_score': evidence_accuracy_score,
+            'source_quality_score': evidence_quality_score
+        }
+    
+    # 8. Generate nuanced recommendation
+    # Calculate an accuracy score for the recommendation function (backwards compat)
+    accuracy_score = calculate_claim_accuracy_score(claims_analysis)
+    recommendation = calculate_nuanced_recommendation(
+        funding_score, accuracy_score, quality_score, debate_analysis['debate_status']
+    )
+    
+    # 9. Generate analysis
     send_progress(session_id, "✅ Analysis ready!")
     analysis = generate_analysis(main_publication, evidence, claim_classification)
     
@@ -653,7 +706,16 @@ def analyze_with_progress(url, title, session_id):
         'myths': detected_myths,
         'evidence': evidence,
         'analysis': analysis,
-        'missing_context': generate_missing_context(main_publication, evidence, claim_classification)
+        'missing_context': generate_missing_context(main_publication, evidence, claim_classification),
+        'multi_dimensional_analysis': {
+            'funding_independence_score': funding_score,
+            'research_support_pattern': research_pattern,
+            'source_quality_score': quality_score,
+            'debate_status': debate_analysis['debate_status'],
+            'debate_description': debate_analysis['description'],
+            'claims': claims_analysis,
+            'recommendation': recommendation
+        }
     }
 
 @app.route('/analyze', methods=['POST'])
@@ -678,12 +740,22 @@ def analyze():
     print("📊 Step 1: Analyzing main publication (FUNDING-FIRST approach)...")
     main_publication = get_or_research_publication(domain)
     
-    # 2. FUNDING-AWARE CLAIM CLASSIFICATION
-    print("\n🔬 Step 2: Funding-aware claim classification...")
+    # 2. Extract and verify claims
+    print("\n🔬 Step 2: Extracting and verifying health claims...")
+    claims = claim_verifier.extract_claims(title, article_content)
+    claims_analysis = []
+    
+    for claim in claims[:2]:  # Limit to 2 claims
+        claim_data = claim_verifier.verify_claim(claim.get('claim', ''), claim.get('type', 'efficacy'))
+        claims_analysis.append(claim_data)
+        print(f"  ✓ Verified: {claim.get('claim', '')[:50]}...")
+    
+    # 3. FUNDING-AWARE CLAIM CLASSIFICATION
+    print("\n🔍 Step 3: Funding-aware claim classification...")
     claim_classification = claim_analyzer.analyze_claim(title, article_content, main_publication)
     
-    # 3. Detect myths
-    print("\n🔍 Step 3: Checking for common health myths...")
+    # 4. Detect myths
+    print("\n🔍 Step 4: Checking for common health myths...")
     detected_myths = []
     title_lower = title.lower()
     for myth in MYTHS:
@@ -697,8 +769,22 @@ def analyze():
     else:
         print("✅ No common myths detected")
     
-    # 4. ADAPTIVE EVIDENCE SEARCH
-    print("\n🔄 Step 4: Adaptive evidence search (seeking independent sources)...")
+    # 5. Detect debate status
+    print("\n🔄 Step 5: Detecting debate status...")
+    debate_analysis = claim_verifier.detect_debate(claims_analysis)
+    print(f"  → {debate_analysis['debate_status']}: {debate_analysis['description'][:60]}...")
+    
+    # 6. Calculate three-dimensional scores and research support pattern
+    print("\n📊 Step 6: Analyzing credibility dimensions...")
+    funding_score = calculate_funding_independence_score(main_publication)
+    quality_score = calculate_source_quality_score(main_publication)
+    research_pattern = analyze_research_support_pattern(claims_analysis)
+    print(f"  → Funding Independence: {funding_score:.1f}/10")
+    print(f"  → Research Support: {research_pattern['pattern']}")
+    print(f"  → Source Quality: {quality_score:.1f}/10")
+    
+    # 7. ADAPTIVE EVIDENCE SEARCH
+    print("\n🔄 Step 7: Adaptive evidence search (seeking independent sources)...")
     evidence = find_adaptive_evidence(
         title,
         domain,
@@ -707,19 +793,44 @@ def analyze():
         article_content
     )
     
-    # 5. Generate analysis
-    print("\n📊 Step 5: Generating comparative analysis...")
+    # Add three-dimensional scores to evidence source if found
+    if evidence and evidence.get('publication'):
+        evidence_pub = evidence['publication']
+        evidence_funding_score = calculate_funding_independence_score(evidence_pub)
+        evidence_research_pattern = analyze_research_support_pattern(claims_analysis)  # Same claims, different source
+        evidence_quality_score = calculate_source_quality_score(evidence_pub)
+        
+        evidence['multi_dimensional_scores'] = {
+            'funding_independence_score': evidence_funding_score,
+            'research_support_pattern': evidence_research_pattern,
+            'source_quality_score': evidence_quality_score
+        }
+        
+        print(f"\n  Evidence Source Analysis:")
+        print(f"    → Funding Independence: {evidence_funding_score:.1f}/10")
+        print(f"    → Research Support: {evidence_research_pattern['pattern']}")
+        print(f"    → Source Quality: {evidence_quality_score:.1f}/10")
+    
+    # 8. Generate nuanced recommendation
+    accuracy_score = calculate_claim_accuracy_score(claims_analysis)  # For recommendation function
+    recommendation = calculate_nuanced_recommendation(
+        funding_score, accuracy_score, quality_score, debate_analysis['debate_status']
+    )
+    
+    # 9. Generate analysis
+    print("\n📊 Step 9: Generating comparative analysis...")
     analysis = generate_analysis(main_publication, evidence, claim_classification)
     
     print(f"\n{'='*60}")
     print(f"✅ ANALYSIS COMPLETE")
     print(f"  Classification: {claim_classification['classification']}")
-    print(f"  Main credibility: {main_publication.get('credibility_score', 'N/A')}/10")
+    print(f"  Funding Independence: {funding_score:.1f}/10")
+    print(f"  Research Support: {research_pattern['pattern']}")
+    print(f"  Source Quality: {quality_score:.1f}/10")
+    print(f"  Debate Status: {debate_analysis['debate_status']}")
     if evidence:
         evidence_name = evidence['publication'].get('name', 'Unknown')
-        evidence_score = evidence['publication'].get('credibility_score', 'N/A')
         print(f"  Evidence source: {evidence_name}")
-        print(f"  Evidence credibility: {evidence_score}/10")
     else:
         print(f"  Evidence source: Not found")
     print(f"{'='*60}\n")
@@ -730,7 +841,16 @@ def analyze():
         'myths': detected_myths,
         'evidence': evidence,
         'analysis': analysis,
-        'missing_context': generate_missing_context(main_publication, evidence, claim_classification)
+        'missing_context': generate_missing_context(main_publication, evidence, claim_classification),
+        'multi_dimensional_analysis': {
+            'funding_independence_score': funding_score,
+            'research_support_pattern': research_pattern,
+            'source_quality_score': quality_score,
+            'debate_status': debate_analysis['debate_status'],
+            'debate_description': debate_analysis['description'],
+            'claims': claims_analysis,
+            'recommendation': recommendation
+        }
     })
 
 def generate_analysis(main_pub, evidence, claim_classification):
