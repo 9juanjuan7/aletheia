@@ -67,49 +67,56 @@ def analyze_research_support_pattern(claims_analysis: list) -> dict:
     """
     
     if not claims_analysis:
-        return {
+        result = {
             'pattern': 'Evidence Gaps',
             'description': 'No claims were analyzed to compare against research.'
         }
+        print(f"  📊 Research Pattern (no claims): {result['pattern']}")
+        return result
     
     total_supporting = sum(c.get('supporting_count', 0) for c in claims_analysis)
     total_contradicting = sum(c.get('contradicting_count', 0) for c in claims_analysis)
     total_evidence = total_supporting + total_contradicting
     
     if total_evidence == 0:
-        return {
+        result = {
             'pattern': 'Evidence Gaps',
             'description': 'Limited research available to verify these specific claims.'
         }
+        print(f"  📊 Research Pattern (no evidence): {result['pattern']}")
+        return result
     
     support_ratio = total_supporting / total_evidence
     
     # Classify based on ratio and volume
     if support_ratio >= 0.8 and total_evidence >= 4:
-        return {
+        result = {
             'pattern': 'Established Consensus',
             'description': f'Majority of research ({total_supporting} supporting sources) aligns with these claims.'
         }
     elif support_ratio >= 0.3 and support_ratio <= 0.7 and total_evidence >= 2:
-        return {
+        result = {
             'pattern': 'Mixed Evidence',
             'description': f'Research shows conflicting results ({total_supporting} supporting, {total_contradicting} contradicting). This is a legitimate area of scientific debate.'
         }
     elif total_evidence <= 2:
-        return {
+        result = {
             'pattern': 'Limited Research',
             'description': f'Only {total_evidence} research source(s) found. These are preliminary or emerging findings.'
         }
     elif support_ratio < 0.3:
-        return {
+        result = {
             'pattern': 'Contradicted by Research',
             'description': f'Most research ({total_contradicting} sources) contradicts or does not support these claims.'
         }
     else:
-        return {
+        result = {
             'pattern': 'Evidence Gaps',
             'description': 'Insufficient research available for reliable verification.'
         }
+    
+    print(f"  📊 Research Pattern: {result['pattern']} ({total_supporting} supporting, {total_contradicting} contradicting)")
+    return result
 
 
 def calculate_claim_accuracy_score(claims_analysis: list) -> float:
@@ -207,20 +214,26 @@ def calculate_source_quality_score(publication: dict) -> float:
 def calculate_nuanced_recommendation(funding_score: float, accuracy_score: float, 
                                    quality_score: float, debate_status: str) -> str:
     """
-    Generate a neutral, nuanced recommendation
+    Generate a neutral, nuanced recommendation based on debate status and scores
     """
     
-    if debate_status == "LEGITIMATE_DEBATE":
+    if debate_status == "ESTABLISHED_FACT":
+        return "This claim has strong research support. No contradicting evidence found."
+    
+    elif debate_status == "MOSTLY_SUPPORTED":
+        return "Research mostly supports this claim. Some minor contradictions exist but overall evidence is favorable."
+    
+    elif debate_status == "LEGITIMATE_DEBATE":
         return "This topic has credible research supporting different viewpoints. Review both sides of the debate."
     
-    elif debate_status == "MANUFACTURED_CONSENSUS":
-        return "The majority research contradicts this claim. The contrarian view lacks independent research support."
+    elif debate_status == "MIXED_EVIDENCE":
+        return "Evidence is mixed. Review multiple sources before drawing conclusions."
     
-    elif debate_status == "ESTABLISHED_FACT":
-        if accuracy_score >= 7.0:
-            return "This claim has strong independent research support."
-        else:
-            return "This claim is contradicted by research evidence."
+    elif debate_status == "MOSTLY_CONTRADICTED":
+        return "Most research contradicts this claim. The supporting evidence is limited."
+    
+    elif debate_status == "CONTRADICTED":
+        return "Research evidence contradicts this claim. No supporting research found."
     
     # General nuanced recommendations
     if funding_score < 3.0:

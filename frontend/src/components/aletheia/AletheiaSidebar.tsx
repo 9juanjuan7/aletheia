@@ -12,6 +12,7 @@ import { MissingContext } from "./MissingContext";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import { CollapsibleSection } from "./CollapsibleSection";
 import { MultiDimensionalAnalysis } from "./MultiDimensionalAnalysis";
+import { InstitutionalCaptureAnalysis } from "./InstitutionalCaptureAnalysis";
 import { 
   FileText, 
   FlaskConical, 
@@ -73,6 +74,7 @@ interface AnalysisData {
   analysis?: Analysis;
   myths?: Myth[];
   missing_context?: string[];
+  institutional_capture?: any;
   multi_dimensional_analysis?: {
     funding_independence_score?: number;
     research_support_pattern?: {
@@ -271,6 +273,19 @@ export function AletheiaSidebar({
             </CollapsibleSection>
           )}
 
+          {/* Institutional Capture Analysis */}
+          {data.institutional_capture && (
+            <CollapsibleSection
+              title="Institutional Integrity"
+              icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />}
+              defaultOpen={data.institutional_capture.overall_integrity_score < 5}
+            >
+              <InstitutionalCaptureAnalysis
+                analysis={data.institutional_capture}
+              />
+            </CollapsibleSection>
+          )}
+
           {/* Evidence Comparison */}
           {data.evidence?.publication && (
             <CollapsibleSection
@@ -293,11 +308,14 @@ export function AletheiaSidebar({
                   url: data.evidence.article?.url,
                   title: data.evidence.article?.title,
                   fundingSources: data.evidence.publication.funding_sources,
-                  multiDimensionalScores: data.evidence.multi_dimensional_scores ? {
-                    funding_independence_score: data.evidence.multi_dimensional_scores.funding_independence_score,
-                    research_support_pattern: data.evidence.multi_dimensional_scores.research_support_pattern,
-                    source_quality_score: data.evidence.multi_dimensional_scores.source_quality_score
-                  } : undefined
+                  multiDimensionalScores: data.evidence.multi_dimensional_scores ? (() => {
+                    console.log('Evidence research_support_pattern:', data.evidence.multi_dimensional_scores.research_support_pattern);
+                    return {
+                      funding_independence_score: data.evidence.multi_dimensional_scores.funding_independence_score,
+                      research_support_pattern: data.evidence.multi_dimensional_scores.research_support_pattern,
+                      source_quality_score: data.evidence.multi_dimensional_scores.source_quality_score
+                    };
+                  })() : undefined
                 }}
                 label={data.evidence.label}
                 fundingDiversity={data.analysis?.funding_diversity}

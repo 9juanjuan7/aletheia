@@ -32,8 +32,28 @@ export function SourceComparison({
   label = "Alternative Evidence",
   fundingDiversity
 }: SourceComparisonProps) {
+  // Calculate score difference using multi-dimensional scores when available
+  // This ensures the gap warning matches the displayed scores
+  const getEffectiveScore = (source: SourceData) => {
+    if (source.multiDimensionalScores) {
+      // Average of available multi-dimensional scores
+      const scores = [
+        source.multiDimensionalScores.funding_independence_score,
+        source.multiDimensionalScores.source_quality_score
+      ].filter((s): s is number => s !== undefined);
+      
+      return scores.length > 0 
+        ? scores.reduce((a, b) => a + b, 0) / scores.length 
+        : source.score;
+    }
+    return source.score;
+  };
+
+  const mainEffectiveScore = getEffectiveScore(mainSource);
+  const evidenceEffectiveScore = evidenceSource ? getEffectiveScore(evidenceSource) : 0;
+  
   const scoreDifference = evidenceSource 
-    ? Math.abs(mainSource.score - evidenceSource.score)
+    ? Math.abs(mainEffectiveScore - evidenceEffectiveScore)
     : 0;
 
   const showWarning = scoreDifference >= 3;

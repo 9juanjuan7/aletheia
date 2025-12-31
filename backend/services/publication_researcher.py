@@ -1,15 +1,28 @@
 import os
 from dotenv import load_dotenv
-from openai import OpenAI
-from tavily import TavilyClient
+from groq import Groq
+from services.searxng import SearxNGClient
 import requests
 from bs4 import BeautifulSoup
 import re
 
 load_dotenv()
 
-openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-tavily_client = TavilyClient(api_key=os.getenv('TAVILY_API_KEY'))
+# Lazy-load clients
+_groq_client = None
+_searxng_client = None
+
+def get_groq_client():
+    global _groq_client
+    if _groq_client is None:
+        _groq_client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+    return _groq_client
+
+def get_searxng_client():
+    global _searxng_client
+    if _searxng_client is None:
+        _searxng_client = SearxNGClient()
+    return _searxng_client
 
 class PublicationResearcher:
     
@@ -116,7 +129,7 @@ class PublicationResearcher:
         all_results = []
         for query in base_queries:
             try:
-                response = tavily_client.search(
+                response = get_searxng_client().search(
                     query=query,
                     max_results=3,
                     search_depth="basic"
@@ -165,7 +178,7 @@ class PublicationResearcher:
         
         for query in funding_queries[:6]:
             try:
-                response = tavily_client.search(
+                response = get_searxng_client().search(
                     query=query,
                     max_results=2,
                     search_depth="basic"
@@ -201,7 +214,7 @@ class PublicationResearcher:
         
         for query in conflict_queries[:5]:
             try:
-                response = tavily_client.search(
+                response = get_searxng_client().search(
                     query=query,
                     max_results=2,
                     search_depth="basic"
@@ -239,7 +252,7 @@ class PublicationResearcher:
         
         for query in funding_queries[:4]:
             try:
-                response = tavily_client.search(
+                response = get_searxng_client().search(
                     query=query,
                     max_results=2,
                     search_depth="basic"
@@ -660,8 +673,8 @@ CRITICAL RULES FOR YOUR VISION:
 """
         
         try:
-            response = openai_client.chat.completions.create(
-                model="gpt-4o-mini",
+            response = get_groq_client().chat.completions.create(
+                model="llama-3.3-70b-versatile",
                 messages=[
                     {
                         "role": "system",
@@ -755,3 +768,8 @@ Prioritize funding transparency over credentials. Be skeptical of ALL authority 
             "research_sources": [],
             "credibility_explanation": "Unable to research - treat with caution"
         }
+
+
+
+
+

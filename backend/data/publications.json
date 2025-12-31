@@ -87,16 +87,42 @@
   },
   {
     "name": "Medical News Today",
-    "owner": "Healthline Media UK Ltd., a subsidiary of Healthline Media, Inc.",
-    "funding_model": "Advertising",
-    "major_advertisers": [],
-    "conflicts": [],
     "domain": "medicalnewstoday.com",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Medical_News_Today",
-      "https://grokipedia.com/page/Medical_News_Today",
-      "https://mediabiasfactcheck.com/medical-news-today/"
-    ]
+    "credibility_score": 4.5,
+    "primary_source_links": true,
+    "funding_transparency": "medium",
+    "ownership": "Healthline Media",
+    "funding_sources": [
+      "Advertising",
+      "Sponsored content"
+    ],
+    "conflicts_of_interest": [
+      "Owned by Healthline Media, which has pharmaceutical industry ties"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Supplement industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Advertising revenue",
+      "Sponsored content"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Advertising revenue, Sponsored content"
   },
   {
     "name": "Worldwide Cancer Research",
@@ -815,36 +841,36 @@
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Pharma-funded, Potential conflicts of interest"
   },
   {
-    "name": "Hospital Ownership and Financial Stability: A Matched ...",
+    "name": "How private finance is moving primary care into corporate ownership",
     "domain": "pubmed.ncbi.nlm.nih.gov",
     "credibility_score": 5.0,
     "primary_source_links": true,
     "funding_transparency": "high",
-    "ownership": "National Institutes of Health (NIH)",
+    "ownership": "N/A",
     "funding_sources": [],
     "conflicts_of_interest": [],
     "industry_ties": [],
-    "author_credentials": "Authors affiliated with academic institutions",
-    "peer_reviewed": true,
-    "editorial_standards": "Peer-reviewed publication",
+    "author_credentials": "N/A",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
     "retraction_history": 0,
-    "fact_check_rating": "High",
+    "fact_check_rating": "Mixed",
     "red_flags": [],
     "green_flags": [
-      "No industry funding found",
-      "Peer-reviewed"
+      "Discloses funding",
+      "Links to studies"
     ],
     "expertise_areas": [
-      "healthcare economics",
-      "hospital management"
+      "health",
+      "finance"
     ],
     "last_updated": "2025-12-28",
     "research_sources": [
-      "https://pubmed.ncbi.nlm.nih.gov/34779183/",
-      "https://www.ncbi.nlm.nih.gov/books/NBK217919/",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC1120133/",
+      "https://pubmed.ncbi.nlm.nih.gov/40700551/",
       "https://www.ncbi.nlm.nih.gov/books/NBK217897/"
     ],
-    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: No industry funding found, Peer-reviewed"
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies"
   },
   {
     "name": "Sustainable Nutrition Initiative",
@@ -2248,5 +2274,662 @@
       "https://www.bloomberg.com/profile/company/32347Z:US"
     ],
     "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some articles disclose funding, Peer-reviewed content | Concerns: Potential pharma influence, Limited funding disclosure"
+  },
+  {
+    "name": "Whole Grains Council Publications",
+    "domain": "wholegrainscouncil.org",
+    "credibility_score": 4.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Oldways",
+    "funding_sources": [
+      "Advertising",
+      "Corporate sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to food industry stakeholders"
+    ],
+    "industry_ties": [
+      "Food industry",
+      "Nutrition advocacy"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate sponsorship",
+      "Potential bias towards whole grains"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://wholegrainscouncil.org/whole-grains-conference-faq",
+      "https://wholegrainscouncil.org/sites/default/files/atoms/files/7_AboutOW_WGC.pdf",
+      "https://wholegrainscouncil.org/about-us"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies | Concerns: Corporate sponsorship, Potential bias towards whole grains"
+  },
+  {
+    "name": "OpenNotes Overview",
+    "domain": "opennotes.org",
+    "credibility_score": 5.0,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "OpenNotes",
+    "funding_sources": [
+      "Charitable foundations"
+    ],
+    "conflicts_of_interest": [],
+    "industry_ties": [],
+    "author_credentials": "Leadership includes MDs and DrPHs",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "patient engagement"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.privco.com/company/opennotes",
+      "http://www.opennotes.org/wp-content/uploads/2020/12/OpenNotes-Case-Statement-Nov-24.pdf",
+      "https://www.opennotes.org/news/opennotes-names-advisors-for-new-lab/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Links to studies"
+  },
+  {
+    "name": "Quora",
+    "domain": "quora.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Quora, Inc.",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by a private corporation"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, no specific medical expertise",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links"
+    ],
+    "green_flags": [
+      "User-generated content",
+      "Diverse perspectives"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://ginnisspace.quora.com/Who-is-the-owner-of-Quora",
+      "https://www.quora.com/Who-is-the-owner-of-Quora",
+      "https://www.quora.com/Who-owns-Quora-Is-it-me"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: User-generated content, Diverse perspectives | Concerns: Pharma-funded, No source links"
+  },
+  {
+    "name": "University of Texas at Austin LibGuides",
+    "domain": "guides.lib.utexas.edu",
+    "credibility_score": 5.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "University of Texas System",
+    "funding_sources": [
+      "State funding",
+      "Private donations"
+    ],
+    "conflicts_of_interest": [
+      "Potential corporate partnerships not disclosed"
+    ],
+    "industry_ties": [
+      "Possible ties to local businesses"
+    ],
+    "author_credentials": "University staff, no specific credentials listed",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Lack of specific funding disclosures",
+      "No peer-reviewed sources linked"
+    ],
+    "green_flags": [
+      "Provides general information",
+      "Links to various resources"
+    ],
+    "expertise_areas": [
+      "health",
+      "business research"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://guides.lib.utexas.edu/copyright/whoowns",
+      "https://guides.lib.utexas.edu/company",
+      "https://guides.lib.utexas.edu/business"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Provides general information, Links to various resources | Concerns: Lack of specific funding disclosures, No peer-reviewed sources linked"
+  },
+  {
+    "name": "USA Today Health Publication",
+    "domain": "usatoday.com",
+    "credibility_score": 4.0,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Gannett Company, Inc.",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Potential influence from advertisers"
+    ],
+    "industry_ties": [
+      "Food industry",
+      "Supplement industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "Limited source links"
+    ],
+    "green_flags": [
+      "Some disclosure of funding"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some disclosure of funding | Concerns: Pharma-funded, Limited source links"
+  },
+  {
+    "name": "The Independent",
+    "domain": "independent.co.uk",
+    "credibility_score": 4.5,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Lebedev family",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Owned by family with international property investments",
+      "Ties to Russian oligarch Alexander Lebedev"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some with medical background",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 1,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No source links",
+      "Ownership by family with potential conflicts"
+    ],
+    "green_flags": [
+      "Some investigative reporting on pharmaceutical industry"
+    ],
+    "expertise_areas": [
+      "health",
+      "politics"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/The_Independent",
+      "https://www.bbc.com/news/entertainment-arts-40762906",
+      "https://mediabiasfactcheck.com/the-independent/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some investigative reporting on pharmaceutical industry | Concerns: Pharma-funded, No source links, Ownership by family with potential conflicts"
+  },
+  {
+    "name": "CNN",
+    "domain": "cnn.com",
+    "credibility_score": 4.5,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Warner Bros. Discovery",
+    "funding_sources": [
+      "Advertising",
+      "Pharmaceutical sponsorship",
+      "Telehealth companies"
+    ],
+    "conflicts_of_interest": [
+      "Owned by media conglomerate with potential pharmaceutical ties"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Telehealth industry"
+    ],
+    "author_credentials": "Staff writers, some with medical background but potential corporate influence",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking, but questionable independence",
+    "retraction_history": 1,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-funded",
+      "No consistent source links",
+      "Potential corporate influence"
+    ],
+    "green_flags": [
+      "Some fact-checking efforts",
+      "Discloses some funding"
+    ],
+    "expertise_areas": [
+      "health",
+      "politics",
+      "entertainment"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/CNN",
+      "https://www.theguardian.com/commentisfree/2025/dec/20/cnn-us-news-media-corporate-ownership",
+      "https://www.axios.com/local/atlanta/2025/06/10/cnn-warner-bros-discovery-two-companies-atlanta-restructuring"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Some fact-checking efforts, Discloses some funding | Concerns: Pharma-funded, No consistent source links, Potential corporate influence"
+  },
+  {
+    "name": "The Conversation",
+    "domain": "theconversation.com",
+    "credibility_score": 6.5,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Independent nonprofit",
+    "funding_sources": [
+      "Reader donations",
+      "Corporate partners",
+      "Advertising"
+    ],
+    "conflicts_of_interest": [
+      "Potential influence from corporate partners"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review, and expert contributors",
+    "peer_reviewed": false,
+    "editorial_standards": "Rigorous fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "High",
+    "red_flags": [
+      "Corporate funding",
+      "Potential pharmaceutical influence"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies",
+      "Independent nonprofit"
+    ],
+    "expertise_areas": [
+      "Health",
+      "Nutrition",
+      "Science"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/The_Conversation_(website)",
+      "https://theconversation.com/us/who-we-are",
+      "https://theconversation.com/who-owns-the-world-tracing-half-the-corporate-giants-shares-to-30-owners-59963"
+    ],
+    "credibility_explanation": "Moderate credibility - generally reliable with some concerns | Strengths: Discloses funding, Links to studies, Independent nonprofit | Concerns: Corporate funding, Potential pharmaceutical influence"
+  },
+  {
+    "name": "MDPI",
+    "domain": "mdpi.com",
+    "credibility_score": 4.5,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "MDPI AG",
+    "funding_sources": [
+      "Advertising",
+      "Article processing charges"
+    ],
+    "conflicts_of_interest": [
+      "Potential ties to pharmaceutical industry"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Varied, including some with medical backgrounds",
+    "peer_reviewed": true,
+    "editorial_standards": "Basic peer review",
+    "retraction_history": 1,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Questionable journal practices",
+      "Lack of transparency in some cases"
+    ],
+    "green_flags": [
+      "Open access",
+      "Discloses article processing charges"
+    ],
+    "expertise_areas": [
+      "Multidisciplinary fields, including health and pharmaceuticals"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/MDPI",
+      "https://www.mdpi.com/about/board",
+      "https://www.mdpi.com/about/history"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Open access, Discloses article processing charges | Concerns: Questionable journal practices, Lack of transparency in some cases"
+  },
+  {
+    "name": "Melanoma Research Foundation",
+    "domain": "melanoma.org",
+    "credibility_score": 4.5,
+    "primary_source_links": false,
+    "funding_transparency": "medium",
+    "ownership": "Independent nonprofit",
+    "funding_sources": [
+      "Corporate sponsorships",
+      "Donations",
+      "Grants"
+    ],
+    "conflicts_of_interest": [
+      "Corporate sponsorships may influence research"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Biotech industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Corporate sponsorships",
+      "No consistent source links"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Some links to studies"
+    ],
+    "expertise_areas": [
+      "melanoma research",
+      "cancer education"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://melanoma.org/executive-leadership-board/",
+      "https://melanoma.org/how-to-help/corporate-sponsorship/",
+      "https://melanoma.org/terms-of-use-2/"
+    ],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discloses funding, Some links to studies | Concerns: Corporate sponsorships, No consistent source links"
+  },
+  {
+    "name": "National Academies of Sciences, Engineering, and Medicine",
+    "domain": "nationalacademies.org",
+    "credibility_score": 7.5,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Congressional Charter",
+    "funding_sources": [
+      "Government",
+      "Private Donations"
+    ],
+    "conflicts_of_interest": [
+      "Potential industry ties through sponsored research"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Biotechnology industry"
+    ],
+    "author_credentials": "Expert panels and staff writers",
+    "peer_reviewed": true,
+    "editorial_standards": "Rigorous peer review and consensus-based reports",
+    "retraction_history": 0,
+    "fact_check_rating": "High",
+    "red_flags": [
+      "Potential industry influence through sponsored research"
+    ],
+    "green_flags": [
+      "Transparent funding",
+      "Links to primary sources",
+      "Peer-reviewed reports"
+    ],
+    "expertise_areas": [
+      "Health",
+      "Science",
+      "Engineering",
+      "Medicine"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://www.nationalacademies.org/read/11844/chapter/4",
+      "https://www.nationalacademies.org/read/10135/chapter/3",
+      "https://www.nationalacademies.org/read/23394/chapter/10"
+    ],
+    "credibility_explanation": "Moderate credibility - generally reliable with some concerns | Strengths: Transparent funding, Links to primary sources, Peer-reviewed reports | Concerns: Potential industry influence through sponsored research"
+  },
+  {
+    "name": "Mayo Clinic",
+    "domain": "mayoclinic.org",
+    "credibility_score": 6.5,
+    "primary_source_links": true,
+    "funding_transparency": "high",
+    "ownership": "Mayo Clinic",
+    "funding_sources": [
+      "Advertising",
+      "Sponsorship",
+      "Gifts"
+    ],
+    "conflicts_of_interest": [
+      "Captive insurance company"
+    ],
+    "industry_ties": [
+      "Medical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Advertising revenue",
+      "Sponsorship"
+    ],
+    "green_flags": [
+      "Discloses funding",
+      "Links to studies",
+      "Conflict of interest policy"
+    ],
+    "expertise_areas": [
+      "health",
+      "medicine"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [
+      "https://en.wikipedia.org/wiki/Mayo_Clinic",
+      "https://www.mayoclinic.org/about-mayo-clinic",
+      "https://newsnetwork.mayoclinic.org/n7-mcnn/7bcc9724adf7b803/uploads/2023/02/2022-Mayo-Clinic-Financial-Statement.pdf"
+    ],
+    "credibility_explanation": "Moderate credibility - generally reliable with some concerns | Strengths: Discloses funding, Links to studies, Conflict of interest policy | Concerns: Advertising revenue, Sponsorship"
+  },
+  {
+    "name": "Merck Manual",
+    "domain": "merckmanuals.com",
+    "credibility_score": 2.0,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Merck & Co.",
+    "funding_sources": [
+      "Pharmaceutical sales",
+      "Advertising"
+    ],
+    "conflicts_of_interest": [
+      "Owned by pharmaceutical company"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Pharma-owned",
+      "No source links",
+      "Lack of transparency"
+    ],
+    "green_flags": [
+      "Basic health information"
+    ],
+    "expertise_areas": [
+      "health",
+      "pharmacology"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Basic health information | Concerns: Pharma-owned, No source links, Lack of transparency"
+  },
+  {
+    "name": "Virta Health",
+    "domain": "virtahealth.com",
+    "credibility_score": 3.5,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Private company",
+    "funding_sources": [
+      "Private investment",
+      "Pharmaceutical sponsorship"
+    ],
+    "conflicts_of_interest": [
+      "Ties to pharmaceutical industry"
+    ],
+    "industry_ties": [
+      "Pharmaceutical industry",
+      "Healthcare industry"
+    ],
+    "author_credentials": "Staff writers, some MD review",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Lack of transparency",
+      "Pharma ties"
+    ],
+    "green_flags": [
+      "Some links to studies"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [],
+    "credibility_explanation": "Very low credibility - major red flags present | Strengths: Some links to studies | Concerns: Lack of transparency, Pharma ties"
+  },
+  {
+    "name": "Chubb Health Publication",
+    "domain": "chubb.com",
+    "credibility_score": 2.0,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Chubb Limited",
+    "funding_sources": [
+      "Insurance premiums",
+      "Investments"
+    ],
+    "conflicts_of_interest": [
+      "Insurance industry ties"
+    ],
+    "industry_ties": [
+      "Insurance industry"
+    ],
+    "author_credentials": "Unknown",
+    "peer_reviewed": false,
+    "editorial_standards": "Unknown",
+    "retraction_history": "Unknown",
+    "fact_check_rating": "Unknown",
+    "red_flags": [
+      "No about page",
+      "No funding transparency",
+      "Insurance industry ties"
+    ],
+    "green_flags": [],
+    "expertise_areas": [
+      "health",
+      "insurance"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [],
+    "credibility_explanation": "Very low credibility - major red flags present | Concerns: No about page, No funding transparency, Insurance industry ties"
+  },
+  {
+    "name": "Paul Saladino, MD",
+    "domain": "paulsaladinomd.com",
+    "credibility_score": 4.5,
+    "primary_source_links": false,
+    "funding_transparency": "low",
+    "ownership": "Private",
+    "funding_sources": [
+      "Book sales",
+      "Consulting"
+    ],
+    "conflicts_of_interest": [
+      "Promotes animal-based diet products"
+    ],
+    "industry_ties": [
+      "Supplement industry",
+      "Food industry"
+    ],
+    "author_credentials": "MD, self-published author",
+    "peer_reviewed": false,
+    "editorial_standards": "Basic fact-checking",
+    "retraction_history": 0,
+    "fact_check_rating": "Mixed",
+    "red_flags": [
+      "Lack of transparency",
+      "Promotes specific diet products"
+    ],
+    "green_flags": [
+      "Discusses importance of nutrition"
+    ],
+    "expertise_areas": [
+      "health",
+      "nutrition"
+    ],
+    "last_updated": "2025-12-28",
+    "research_sources": [],
+    "credibility_explanation": "Low credibility - significant conflicts or capture concerns | Strengths: Discusses importance of nutrition | Concerns: Lack of transparency, Promotes specific diet products"
   }
 ]
