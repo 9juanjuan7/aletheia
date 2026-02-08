@@ -6,11 +6,11 @@ Aletheia combines a Chrome extension and Flask backend to analyze health article
 
 ## ✨ Features
 
-- 🔬 **Publication Analysis**: Research ownership, funding sources, and conflicts of interest
-- 📊 **Credibility Scoring**: 0-10 rating based on funding transparency (not credentials)
-- 🔄 **Counter-Perspectives**: Find opposing viewpoints from independent sources
-- 🚩 **Red/Green Flags**: Instant warnings about bias and propaganda
-- 💾 **Growing Database**: Every analysis builds a shared knowledge base
+- **Publication Analysis**: Research ownership, funding sources, and conflicts of interest
+- **Credibility Scoring**: 0-10 rating based on funding transparency (not credentials)
+- **Counter-Perspectives**: Find opposing viewpoints from independent sources
+- **Red/Green Flags**: Instant warnings about bias and propaganda
+- **Growing Database**: Every analysis builds a shared knowledge base
 
 ## 🛠️ Tech Stack
 
@@ -135,6 +135,7 @@ aletheia/
 ## ⚠️ Disclaimer
 
 Aletheia is a research tool. Always consult qualified healthcare professionals for medical decisions.
+
 
 
 
