@@ -134,7 +134,8 @@ aletheia/
 
 ## ⚠️ Disclaimer
 
-Aletheia is a research tool. Always consult qualified healthcare professionals for medical decisions.
+Aletheia is a research tool.
+
 
 
 
