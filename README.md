@@ -1,15 +1,8 @@
 # 🔍 Aletheia
 
-**Exposing funding conflicts and health misinformation through AI-powered analysis**
+**A Chrome extension for AI-powered analysis of health information credibility**
 
-Aletheia is a Chrome extension that helps you evaluate health information by following the money. Instead of blindly trusting credentials, it reveals who funds publications, their conflicts of interest, and presents counter-perspectives from independent sources.
-
-## 🎯 Why Aletheia?
-
-- **Funding > Credentials**: A PhD funded by Pfizer is less credible than an independent researcher
-- **Expose Conflicts**: See pharmaceutical sponsorships, industry ties, and hidden agendas
-- **Counter-Perspectives**: Automatically finds alternative viewpoints from different funding sources
-- **Follow the Money**: The #1 indicator of credibility is who pays for the research
+Aletheia combines a Chrome extension and Flask backend to analyze health articles, revealing who publishes them, how they are funded, and any potential conflicts of interest. It surfaces independently sourced counter‑perspectives and highlights funding and ownership patterns so users can better understand possible bias in the information they read.
 
 ## ✨ Features
 
@@ -109,8 +102,6 @@ python app.py
 - -2.0: Pharma/supplement sponsorship
 - -2.0: No source citations
 
-**Key Principle:** Funding independence matters more than impressive credentials.
-
 ## 📁 Project Structure
 ```
 aletheia/
@@ -145,11 +136,6 @@ aletheia/
 
 Aletheia is a research tool. Always consult qualified healthcare professionals for medical decisions.
 
----
-
-**Built with skepticism. Powered by independence.**
-
-*"Follow the money, find the truth."*
 
 
 
